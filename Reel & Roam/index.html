@@ -2,14 +2,14 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TripPlanner - Plan Your Perfect Adventure</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" />
 </head>
 
 <body>
@@ -20,8 +20,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <i class="fas fa-plane"></i>
-                <span>TripPlanner</span>
+                <i class="fas fa-plane"></i><span>TripPlanner</span>
             </div>
             <div class="nav-menu" id="navMenu">
                 <a href="#home" class="nav-link">Home</a>
@@ -30,9 +29,7 @@
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
             <div class="nav-toggle" id="navToggle">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </div>
         </div>
     </nav>
@@ -43,33 +40,28 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 class="hero-title">
-                        Plan Your Perfect
-                        <span class="gradient-text">Adventure</span>
+                        Plan Your Perfect <span class="gradient-text">Adventure</span>
                     </h1>
                     <p class="hero-description">
-                        Create unforgettable journeys with our intelligent trip planner.
-                        From solo adventures to group expeditions, we've got you covered.
+                        Create unforgettable journeys with our intelligent trip planner. From solo adventures to group
+                        expeditions, we've got you covered.
                     </p>
 
                     <!-- Feature Cards -->
                     <div class="feature-grid">
-                        <div class="feature-card">
-                            <i class="fas fa-map-marker-alt"></i>
+                        <div class="feature-card"><i class="fas fa-map-marker-alt"></i>
                             <h3>Smart Planning</h3>
                             <p>AI-powered recommendations</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-users"></i>
+                        <div class="feature-card"><i class="fas fa-users"></i>
                             <h3>Group Management</h3>
                             <p>Perfect for any trip type</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-dollar-sign"></i>
+                        <div class="feature-card"><i class="fas fa-dollar-sign"></i>
                             <h3>Budget Splitter</h3>
                             <p>Fair expense splitting</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-camera"></i>
+                        <div class="feature-card"><i class="fas fa-camera"></i>
                             <h3>Memory Gallery</h3>
                             <p>Store travel moments</p>
                         </div>
@@ -85,34 +77,25 @@
 
                     <!-- Login Form -->
                     <form id="loginForm" class="auth-form active">
-                        <div class="form-group">
-                            <input type="email" id="loginEmail" placeholder="Email Address" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="loginPassword" placeholder="Password" required>
-                        </div>
-                        <button type="submit" class="auth-btn">
-                            <span>Login</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
+                        <div class="form-group"><input type="email" id="loginEmail" placeholder="Email Address"
+                                required /></div>
+                        <div class="form-group"><input type="password" id="loginPassword" placeholder="Password"
+                                required /></div>
+                        <button type="submit" class="auth-btn"><span>Login</span><i
+                                class="fas fa-arrow-right"></i></button>
                         <p class="auth-link">Demo: admin@tripplanner.com / password</p>
                     </form>
 
                     <!-- Register Form -->
                     <form id="registerForm" class="auth-form">
-                        <div class="form-group">
-                            <input type="text" id="registerName" placeholder="Full Name" required>
+                        <div class="form-group"><input type="text" id="registerName" placeholder="Full Name" required />
                         </div>
-                        <div class="form-group">
-                            <input type="email" id="registerEmail" placeholder="Email Address" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="registerPassword" placeholder="Password" required>
-                        </div>
-                        <button type="submit" class="auth-btn">
-                            <span>Create Account</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
+                        <div class="form-group"><input type="email" id="registerEmail" placeholder="Email Address"
+                                required /></div>
+                        <div class="form-group"><input type="password" id="registerPassword" placeholder="Password"
+                                required /></div>
+                        <button type="submit" class="auth-btn"><span>Create Account</span><i
+                                class="fas fa-arrow-right"></i></button>
                     </form>
                 </div>
             </div>
@@ -125,75 +108,61 @@
             <h2 class="section-title">Why Choose TripPlanner?</h2>
             <div class="features-grid">
                 <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
                     <h3>Smart Recommendations</h3>
-                    <p>AI-powered destination suggestions based on your preferences and travel history.</p>
+                    <p>AI-powered destination suggestions.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
                     <h3>Mobile Friendly</h3>
-                    <p>Access your trips anywhere with our responsive design that works on all devices.</p>
+                    <p>Works on all devices.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
                     <h3>Budget Tracking</h3>
-                    <p>Keep track of expenses and split costs fairly among group members.</p>
+                    <p>Split and manage trip expenses.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
+                    <div class="feature-icon"><i class="fas fa-bell"></i></div>
                     <h3>Smart Alerts</h3>
-                    <p>Get notified about important trip updates, weather changes, and reminders.</p>
+                    <p>Trip updates & reminders.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-images"></i>
-                    </div>
+                    <div class="feature-icon"><i class="fas fa-images"></i></div>
                     <h3>Memory Gallery</h3>
-                    <p>Upload and organize your travel photos in beautiful galleries.</p>
+                    <p>Upload & organize your photos.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-map"></i>
-                    </div>
+                    <div class="feature-icon"><i class="fas fa-map"></i></div>
                     <h3>Interactive Maps</h3>
-                    <p>Explore destinations with detailed interactive maps and location planning.</p>
+                    <p>Explore with dynamic maps.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="explore" class="explore-places">
+    <!-- Explore Section -->
+    <section class="explore-places">
         <header>
             <h1>Reel & Roam</h1>
-            <p>Travel Vintage. Reel Timeless.</p>
+            <p>Watch travel snippets from explorers around the world</p>
         </header>
-
-        <main>
-            <section class="video-banner">
-                <video autoplay muted loop class="bg-video">
+        <main class="cards-container">
+            <div class="video-banner">
+                <video class="bg-video" autoplay muted loop>
                     <source src="jaipur.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
                 </video>
                 <div class="overlay-text">Jaipur</div>
-            </section>
-
-            <section class="video-banner">
-                <video autoplay muted loop class="bg-video">
+            </div>
+            <div class="video-banner">
+                <video class="bg-video" autoplay muted loop>
                     <source src="manali.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
                 </video>
                 <div class="overlay-text">Manali</div>
-            </section>
+            </div>
         </main>
     </section>
+
 
     <!-- Loading Screen -->
     <div id="loading" class="loading-screen">
@@ -204,6 +173,67 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
+    <script>
+        const client = new Appwrite.Client();
+        const account = new Appwrite.Account(client);
+        client.setEndpoint("https://fra.cloud.appwrite.io/v1").setProject("68860401002a4d8a099f");
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
+
+            if (!email || !password) return alert("Fill all fields.");
+            if (password.length < 8) return alert("Password must be 8+ characters.");
+
+            try {
+                await account.createEmailSession(email, password);
+                const user = await account.get();
+                localStorage.setItem("currentUser", JSON.stringify(user));
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                alert("Login failed. Check credentials.");
+                console.error(error);
+            }
+        });
+
+        // Register Handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = registerName.value.trim();
+            const email = registerEmail.value.trim();
+            const password = registerPassword.value.trim();
+
+            if (!name || !email || !password) return alert("Fill all fields.");
+            if (password.length < 8) return alert("Password must be 8+ characters.");
+
+            try {
+                await account.create('unique()', email, password, name);
+                await account.createEmailSession(email, password);
+                const user = await account.get();
+                localStorage.setItem("currentUser", JSON.stringify(user));
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                if (error.code === 409) {
+                    alert("Email already exists. Please login.");
+                } else {
+                    alert("Registration failed.");
+                }
+                console.error(error);
+            }
+        });
+
+        // Tab Switch Logic
+        function switchTab(tab) {
+            document.querySelectorAll(".auth-tab").forEach(btn => btn.classList.remove("active"));
+            document.querySelectorAll(".auth-form").forEach(form => form.classList.remove("active"));
+            document.querySelector(`.auth-tab[onclick*="${tab}"]`).classList.add("active");
+            document.getElementById(`${tab}Form`).classList.add("active");
+        }
+    </script>
+
     <script src="https://unpkg.com/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -212,7 +242,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="app.js"></script>
-    <script src="auth.js"></script>
     <script src="animations.js"></script>
 </body>
 
