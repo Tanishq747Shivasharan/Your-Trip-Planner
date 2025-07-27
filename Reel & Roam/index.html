@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TripPlanner - Plan Your Perfect Adventure</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Particle Background -->
     <div id="particles-js"></div>
@@ -44,10 +47,10 @@
                         <span class="gradient-text">Adventure</span>
                     </h1>
                     <p class="hero-description">
-                        Create unforgettable journeys with our intelligent trip planner. 
+                        Create unforgettable journeys with our intelligent trip planner.
                         From solo adventures to group expeditions, we've got you covered.
                     </p>
-                    
+
                     <!-- Feature Cards -->
                     <div class="feature-grid">
                         <div class="feature-card">
@@ -167,6 +170,31 @@
         </div>
     </section>
 
+    <section id="explore" class="explore-places">
+        <header>
+            <h1>Reel & Roam</h1>
+            <p>Travel Vintage. Reel Timeless.</p>
+        </header>
+
+        <main>
+            <section class="video-banner">
+                <video autoplay muted loop class="bg-video">
+                    <source src="jaipur.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+                <div class="overlay-text">Jaipur</div>
+            </section>
+
+            <section class="video-banner">
+                <video autoplay muted loop class="bg-video">
+                    <source src="manali.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+                <div class="overlay-text">Manali</div>
+            </section>
+        </main>
+    </section>
+
     <!-- Loading Screen -->
     <div id="loading" class="loading-screen">
         <div class="loading-content">
@@ -187,4 +215,5 @@
     <script src="auth.js"></script>
     <script src="animations.js"></script>
 </body>
+
 </html>
