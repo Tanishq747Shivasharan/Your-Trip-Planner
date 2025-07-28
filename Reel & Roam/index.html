@@ -27,6 +27,17 @@
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="#contact" class="nav-link">Contact</a>
+                
+                <!-- Theme Toggle in Navigation -->
+                <div class="toggle-container nav-toggle-theme">
+                    <label class="toggle-switch toggle-small toggle-with-icons" title="Toggle Dark Mode">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="toggle-slider">
+                            <i class="toggle-icon-left fas fa-moon"></i>
+                            <i class="toggle-icon-right fas fa-sun"></i>
+                        </span>
+                    </label>
+                </div>
             </div>
             <div class="nav-toggle" id="navToggle">
                 <span></span><span></span><span></span>
@@ -46,6 +57,32 @@
                         Create unforgettable journeys with our intelligent trip planner. From solo adventures to group
                         expeditions, we've got you covered.
                     </p>
+
+                    <!-- User Preferences Toggle Group -->
+                    <div class="toggle-group">
+                        <div class="toggle-group-title">Quick Preferences</div>
+                        <div class="toggle-container">
+                            <label class="toggle-label">Email notifications</label>
+                            <label class="toggle-switch toggle-small">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-container">
+                            <label class="toggle-label">Auto-save trips</label>
+                            <label class="toggle-switch toggle-small">
+                                <input type="checkbox" id="autoSave" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-container">
+                            <label class="toggle-label">Show budget alerts</label>
+                            <label class="toggle-switch toggle-small">
+                                <input type="checkbox" id="budgetAlerts">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
 
                     <!-- Feature Cards -->
                     <div class="feature-grid">
@@ -81,6 +118,16 @@
                                 required /></div>
                         <div class="form-group"><input type="password" id="loginPassword" placeholder="Password"
                                 required /></div>
+                        
+                        <!-- Remember Me Toggle -->
+                        <div class="toggle-container" style="margin-bottom: 1rem;">
+                            <label class="toggle-label">Remember me</label>
+                            <label class="toggle-switch toggle-small">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
                         <button type="submit" class="auth-btn"><span>Login</span><i
                                 class="fas fa-arrow-right"></i></button>
                         <p class="auth-link">Demo: admin@tripplanner.com / password</p>
@@ -94,6 +141,24 @@
                                 required /></div>
                         <div class="form-group"><input type="password" id="registerPassword" placeholder="Password"
                                 required /></div>
+                        
+                        <!-- Terms and Newsletter Toggles -->
+                        <div class="toggle-container" style="margin-bottom: 0.5rem;">
+                            <label class="toggle-label">I agree to terms & conditions</label>
+                            <label class="toggle-switch toggle-small">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="toggle-container" style="margin-bottom: 1rem;">
+                            <label class="toggle-label">Subscribe to newsletter</label>
+                            <label class="toggle-switch toggle-small">
+                                <input type="checkbox" id="newsletter" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
                         <button type="submit" class="auth-btn"><span>Create Account</span><i
                                 class="fas fa-arrow-right"></i></button>
                     </form>
@@ -106,6 +171,75 @@
     <section id="features" class="features">
         <div class="container">
             <h2 class="section-title">Why Choose TripPlanner?</h2>
+            
+            <!-- Feature Toggles Section -->
+            <div style="max-width: 800px; margin: 0 auto 4rem;">
+                <h3 style="text-align: center; margin-bottom: 2rem; color: var(--primary); font-size: 1.5rem;">Customize Your Experience</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+                    
+                    <!-- Smart Features Card -->
+                    <div class="toggle-card">
+                        <div class="toggle-card-content">
+                            <div class="toggle-card-title">
+                                <i class="fas fa-brain" style="margin-right: 0.5rem; color: var(--accent);"></i>
+                                Smart Recommendations
+                            </div>
+                            <div class="toggle-card-description">Get AI-powered destination and activity suggestions</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="smartRecommendations" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <!-- Budget Tracking Card -->
+                    <div class="toggle-card">
+                        <div class="toggle-card-content">
+                            <div class="toggle-card-title">
+                                <i class="fas fa-chart-line" style="margin-right: 0.5rem; color: var(--accent);"></i>
+                                Budget Tracking
+                            </div>
+                            <div class="toggle-card-description">Track expenses and split costs with friends</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="budgetTracking" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <!-- Smart Alerts Card -->
+                    <div class="toggle-card">
+                        <div class="toggle-card-content">
+                            <div class="toggle-card-title">
+                                <i class="fas fa-bell" style="margin-right: 0.5rem; color: var(--accent);"></i>
+                                Smart Alerts
+                            </div>
+                            <div class="toggle-card-description">Receive trip updates and helpful reminders</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="smartAlerts">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <!-- Memory Gallery Card -->
+                    <div class="toggle-card">
+                        <div class="toggle-card-content">
+                            <div class="toggle-card-title">
+                                <i class="fas fa-images" style="margin-right: 0.5rem; color: var(--accent);"></i>
+                                Memory Gallery
+                            </div>
+                            <div class="toggle-card-description">Upload and organize your travel photos</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="memoryGallery" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                </div>
+            </div>
+            
             <div class="features-grid">
                 <div class="feature-item">
                     <div class="feature-icon"><i class="fas fa-brain"></i></div>
@@ -146,6 +280,24 @@
         <header>
             <h1>Reel & Roam</h1>
             <p>Watch travel snippets from explorers around the world</p>
+            
+            <!-- Video Controls Toggle -->
+            <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1rem;">
+                <div class="toggle-container">
+                    <label class="toggle-label" style="color: white;">Auto-play videos</label>
+                    <label class="toggle-switch toggle-small">
+                        <input type="checkbox" id="autoplayVideos" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-container">
+                    <label class="toggle-label" style="color: white;">Show sound</label>
+                    <label class="toggle-switch toggle-small">
+                        <input type="checkbox" id="videoSound">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
         </header>
         <main class="cards-container">
             <div class="video-banner">
@@ -163,7 +315,6 @@
         </main>
     </section>
 
-
     <!-- Loading Screen -->
     <div id="loading" class="loading-screen">
         <div class="loading-content">
@@ -179,11 +330,65 @@
         const account = new Appwrite.Account(client);
         client.setEndpoint("https://fra.cloud.appwrite.io/v1").setProject("68860401002a4d8a099f");
 
+        // Theme Toggle Functionality
+        document.getElementById('themeToggle').addEventListener('change', function() {
+            document.body.classList.toggle('dark-theme', this.checked);
+            localStorage.setItem('darkMode', this.checked);
+        });
+
+        // Load saved theme preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.getElementById('themeToggle').checked = true;
+            document.body.classList.add('dark-theme');
+        }
+
+        // Video Controls
+        document.getElementById('autoplayVideos').addEventListener('change', function() {
+            const videos = document.querySelectorAll('.bg-video');
+            videos.forEach(video => {
+                if (this.checked) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        });
+
+        document.getElementById('videoSound').addEventListener('change', function() {
+            const videos = document.querySelectorAll('.bg-video');
+            videos.forEach(video => {
+                video.muted = !this.checked;
+            });
+        });
+
+        // Feature toggles functionality
+        const featureToggles = {
+            smartRecommendations: document.getElementById('smartRecommendations'),
+            budgetTracking: document.getElementById('budgetTracking'),
+            smartAlerts: document.getElementById('smartAlerts'),
+            memoryGallery: document.getElementById('memoryGallery')
+        };
+
+        Object.keys(featureToggles).forEach(feature => {
+            featureToggles[feature].addEventListener('change', function() {
+                console.log(`${feature}: ${this.checked ? 'enabled' : 'disabled'}`);
+                // Here you can add functionality to enable/disable features
+                localStorage.setItem(feature, this.checked);
+            });
+
+            // Load saved preferences
+            const saved = localStorage.getItem(feature);
+            if (saved !== null) {
+                featureToggles[feature].checked = saved === 'true';
+            }
+        });
+
         // Login Handler
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = loginEmail.value.trim();
             const password = loginPassword.value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
 
             if (!email || !password) return alert("Fill all fields.");
             if (password.length < 8) return alert("Password must be 8+ characters.");
@@ -191,7 +396,14 @@
             try {
                 await account.createEmailSession(email, password);
                 const user = await account.get();
-                localStorage.setItem("currentUser", JSON.stringify(user));
+                
+                if (rememberMe) {
+                    localStorage.setItem("currentUser", JSON.stringify(user));
+                    localStorage.setItem("rememberUser", "true");
+                } else {
+                    sessionStorage.setItem("currentUser", JSON.stringify(user));
+                }
+                
                 window.location.href = "dashboard.html";
             } catch (error) {
                 alert("Login failed. Check credentials.");
@@ -205,15 +417,22 @@
             const name = registerName.value.trim();
             const email = registerEmail.value.trim();
             const password = registerPassword.value.trim();
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const newsletter = document.getElementById('newsletter').checked;
 
             if (!name || !email || !password) return alert("Fill all fields.");
+            if (!agreeTerms) return alert("You must agree to terms & conditions.");
             if (password.length < 8) return alert("Password must be 8+ characters.");
 
             try {
                 await account.create('unique()', email, password, name);
                 await account.createEmailSession(email, password);
                 const user = await account.get();
+                
+                // Save newsletter preference
+                localStorage.setItem("newsletter", newsletter);
                 localStorage.setItem("currentUser", JSON.stringify(user));
+                
                 window.location.href = "dashboard.html";
             } catch (error) {
                 if (error.code === 409) {
