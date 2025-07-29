@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - TripPlanner</title>
-    <link rel="stylesheet" href="style.css">
+    <title>TripPlanner Dashboard with Smart Budget Splitter</title>
     <link rel="stylesheet" href="dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
+
 <body class="dashboard-body">
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <i class="fas fa-plane"></i>
-            <span>TripPlanner</span>
+            <span>Reel & Roam</span>
         </div>
         <nav class="sidebar-nav">
             <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
@@ -27,7 +30,7 @@
             </a>
             <a href="#budget" class="nav-item" onclick="showSection('budget')">
                 <i class="fas fa-dollar-sign"></i>
-                <span>Budget</span>
+                <span>Smart Budget</span>
             </a>
             <a href="#memories" class="nav-item" onclick="showSection('memories')">
                 <i class="fas fa-camera"></i>
@@ -121,7 +124,28 @@
                     <button class="btn-primary" onclick="showSection('plan-trip')">Plan New Trip</button>
                 </div>
                 <div class="trips-list" id="recentTrips">
-                    <!-- Trip items will be populated by JavaScript -->
+                    <div class="trip-item">
+                        <div class="trip-image">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="trip-details">
+                            <h4>Paris Adventure</h4>
+                            <p>May 15-22, 2024 • 7 days</p>
+                            <span class="trip-status completed">Completed</span>
+                        </div>
+                        <div class="trip-budget">$1,200</div>
+                    </div>
+                    <div class="trip-item">
+                        <div class="trip-image">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="trip-details">
+                            <h4>Tokyo Discovery</h4>
+                            <p>June 10-17, 2024 • 8 days</p>
+                            <span class="trip-status upcoming">Upcoming</span>
+                        </div>
+                        <div class="trip-budget">$1,800</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -166,14 +190,40 @@
                         </button>
                     </div>
                     <div class="destinations-grid" id="destinationsGrid">
-                        <!-- Destinations will be populated by JavaScript -->
+                        <div class="destination-card" onclick="selectDestination('Paris')">
+                            <div class="destination-image">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <div class="destination-info">
+                                <h4>Paris, France</h4>
+                                <p>City of Light</p>
+                            </div>
+                        </div>
+                        <div class="destination-card" onclick="selectDestination('Tokyo')">
+                            <div class="destination-image">
+                                <i class="fas fa-torii-gate"></i>
+                            </div>
+                            <div class="destination-info">
+                                <h4>Tokyo, Japan</h4>
+                                <p>Modern Metropolis</p>
+                            </div>
+                        </div>
+                        <div class="destination-card" onclick="selectDestination('Bali')">
+                            <div class="destination-image">
+                                <i class="fas fa-umbrella-beach"></i>
+                            </div>
+                            <div class="destination-info">
+                                <h4>Bali, Indonesia</h4>
+                                <p>Tropical Paradise</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Trip Details -->
                 <div class="planner-card">
                     <h3>Trip Details</h3>
-                    <form id="tripDetailsForm">
+                    <form id="tripDetailsForm" onsubmit="createTrip(event)">
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Trip Title</label>
@@ -206,78 +256,125 @@
                 <!-- Map -->
                 <div class="planner-card">
                     <h3>Location Map</h3>
-                    <div id="map" class="trip-map"></div>
+                    <div id="plannerMap" class="trip-map"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Budget Section -->
+        <!-- Smart Budget Splitter Section -->
         <section id="budget-section" class="content-section">
             <div class="section-header">
-                <h1>Budget Splitter</h1>
-                <p>Manage group expenses</p>
+                <h1>Smart Budget Splitter</h1>
+                <p>AI-powered budget planning with destination insights</p>
             </div>
 
-            <div class="budget-splitter">
+            <div class="smart-budget-container">
+                <!-- Trip Type Selection -->
                 <div class="budget-card">
-                    <h3>Trip Budget Overview</h3>
-                    <div class="budget-summary">
-                        <div class="budget-item">
-                            <span>Total Budget:</span>
-                            <span id="totalBudget">$1,500</span>
+                    <h3>Trip Type</h3>
+                    <div class="smart-trip-types">
+                        <button class="smart-trip-type-btn active" data-type="solo">
+                            <i class="fas fa-user"></i>
+                            <span>Solo Travel</span>
+                        </button>
+                        <button class="smart-trip-type-btn" data-type="couple">
+                            <i class="fas fa-heart"></i>
+                            <span>Couple</span>
+                        </button>
+                        <button class="smart-trip-type-btn" data-type="friends">
+                            <i class="fas fa-users"></i>
+                            <span>Friends Group</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Budget Tool -->
+                <div class="budget-tool-grid">
+                    <div class="budget-card">
+                        <h3>Trip Details</h3>
+                        <div class="smart-form">
+                            <input type="text" id="smartTripDestination"
+                                placeholder="Enter destination (e.g., Paris, Tokyo)" class="smart-input">
+                            <input type="number" id="smartTripDays" placeholder="Number of days" min="1" max="30"
+                                class="smart-input">
+                            <input type="number" id="smartGroupSize" placeholder="Group size" value="1" min="1" max="20"
+                                class="smart-input">
+                            <input type="number" id="smartTotalBudget" placeholder="Total budget ($)" min="100"
+                                class="smart-input">
+                            <button id="calculateSmartBtn" class="btn-primary smart-calc-btn">
+                                <i class="fas fa-brain"></i>
+                                Calculate Smart Budget
+                            </button>
                         </div>
-                        <div class="budget-item">
-                            <span>Total Spent:</span>
-                            <span id="totalSpentBudget">$890</span>
+                    </div>
+
+                    <div class="budget-card">
+                        <h3>Smart Budget Breakdown</h3>
+                        <div class="budget-breakdown">
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🏨</div>
+                                <span class="breakdown-label">Accommodation:</span>
+                                <span id="smartAccommodation" class="breakdown-amount">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🍽</div>
+                                <span class="breakdown-label">Food & Drinks:</span>
+                                <span id="smartFood" class="breakdown-amount">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🚗</div>
+                                <span class="breakdown-label">Transportation:</span>
+                                <span id="smartTransport" class="breakdown-amount">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🎯</div>
+                                <span class="breakdown-label">Activities:</span>
+                                <span id="smartActivities" class="breakdown-amount">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">💰</div>
+                                <span class="breakdown-label">Emergency Fund:</span>
+                                <span id="smartEmergency" class="breakdown-amount">$0</span>
+                            </div>
                         </div>
-                        <div class="budget-item">
-                            <span>Remaining:</span>
-                            <span id="remainingBudget">$610</span>
+                    </div>
+
+                    <div class="budget-card">
+                        <h3>Smart Trip Advice</h3>
+                        <div id="smartTripAdvice" class="trip-advice">
+                            <div class="advice-item">
+                                <span class="advice-icon">💡</span>
+                                <span>Enter your trip details to get personalized advice!</span>
+                            </div>
+                        </div>
+
+                        <div class="budget-summary">
+                            <h4>Budget Summary</h4>
+                            <div class="summary-item">
+                                <span>Total Budget:</span>
+                                <span id="smartTotalDisplay" class="summary-amount">$0</span>
+                            </div>
+                            <div class="summary-item highlight">
+                                <span>Per Person:</span>
+                                <span id="smartPerPerson" class="summary-amount">$0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Per Day:</span>
+                                <span id="smartPerDay" class="summary-amount">$0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Map and Attractions -->
                 <div class="budget-card">
-                    <h3>Add Expense</h3>
-                    <form id="expenseForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="text" id="expenseDescription" placeholder="Expense description">
-                            </div>
-                            <div class="form-group">
-                                <input type="number" id="expenseAmount" placeholder="Amount">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <select id="expenseCategory">
-                                    <option value="accommodation">Accommodation</option>
-                                    <option value="transport">Transport</option>
-                                    <option value="food">Food & Dining</option>
-                                    <option value="activities">Activities</option>
-                                    <option value="shopping">Shopping</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" id="paidBy" placeholder="Paid by">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-primary">Add Expense</button>
-                    </form>
-                </div>
-
-                <div class="budget-card">
-                    <h3>Expense List</h3>
-                    <div class="expenses-list" id="expensesList">
-                        <!-- Expenses will be populated by JavaScript -->
-                    </div>
-                </div>
-
-                <div class="budget-card">
-                    <h3>Split Summary</h3>
-                    <div class="split-summary" id="splitSummary">
-                        <!-- Split summary will be populated by JavaScript -->
+                    <h3>
+                        <i class="fas fa-map-marker-alt"></i>
+                        Destination Map & Attractions
+                    </h3>
+                    <div id="smartBudgetMap" class="smart-map"></div>
+                    <div id="smartAttractionsGrid" class="attractions-grid">
+                        <!-- Attractions will be populated here -->
                     </div>
                 </div>
             </div>
@@ -307,7 +404,24 @@
                 </div>
 
                 <div class="memories-gallery" id="memoriesGallery">
-                    <!-- Photos will be populated by JavaScript -->
+                    <div class="memory-card">
+                        <div class="memory-image">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="memory-info">
+                            <h4>Paris Sunset</h4>
+                            <p>May 18, 2024</p>
+                        </div>
+                    </div>
+                    <div class="memory-card">
+                        <div class="memory-image">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="memory-info">
+                            <h4>Eiffel Tower</h4>
+                            <p>May 16, 2024</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -345,7 +459,26 @@
                 <div class="alerts-list">
                     <h3>Recent Alerts</h3>
                     <div id="alertsList">
-                        <!-- Alerts will be populated by JavaScript -->
+                        <div class="alert-item">
+                            <div class="alert-icon weather">
+                                <i class="fas fa-cloud-rain"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h4>Weather Update</h4>
+                                <p>Rain expected in Tokyo tomorrow</p>
+                                <span class="alert-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon flight">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h4>Flight Reminder</h4>
+                                <p>Check-in opens in 24 hours</p>
+                                <span class="alert-time">1 day ago</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -409,12 +542,535 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="dashboard.js"></script>
-    <script src="trip-planner.js"></script>
-    <script src="budget.js"></script>
-    <script src="memories.js"></script>
-    <script src="alerts.js"></script>
-    <script src="admin.js"></script>
+
+    <script>
+        // Global variables
+        let currentSection = 'dashboard';
+        let selectedTripType = 'solo';
+        let currentSmartTripType = 'solo';
+        let smartBudgetMap = null;
+        let plannerMapInstance = null;
+
+        // Navigation functions
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(section + '-section').classList.add('active');
+
+            // Add active class to clicked nav item
+            document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+
+            currentSection = section;
+
+            // Initialize maps when sections are shown
+            if (section === 'budget' && !smartBudgetMap) {
+                setTimeout(initSmartBudgetMap, 100);
+            }
+            if (section === 'plan-trip' && !plannerMapInstance) {
+                setTimeout(initPlannerMap, 100);
+            }
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Trip planning functions
+        function selectTripType(type) {
+            selectedTripType = type;
+            document.querySelectorAll('.trip-type').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function selectDestination(destination) {
+            document.getElementById('destinationInput').value = destination;
+            // Update planner map
+            if (plannerMapInstance) {
+                updatePlannerMap(destination);
+            }
+        }
+
+        function searchDestinations() {
+            const query = document.getElementById('destinationInput').value;
+            console.log('Searching for destinations:', query);
+            // Implementation for destination search
+        }
+
+        function createTrip(event) {
+            event.preventDefault();
+            const formData = {
+                title: document.getElementById('tripTitle').value,
+                duration: document.getElementById('tripDuration').value,
+                startDate: document.getElementById('startDate').value,
+                budget: document.getElementById('tripBudget').value,
+                type: selectedTripType
+            };
+            console.log('Creating trip:', formData);
+            alert('Trip created successfully!');
+        }
+
+        // Smart Budget Splitter functionality
+        const destinationBudgetData = {
+            'paris': { accommodation: 40, food: 25, transport: 10, activities: 20, emergency: 5 },
+            'tokyo': { accommodation: 35, food: 30, transport: 15, activities: 15, emergency: 5 },
+            'bali': { accommodation: 25, food: 20, transport: 15, activities: 30, emergency: 10 },
+            'london': { accommodation: 45, food: 30, transport: 12, activities: 10, emergency: 3 },
+            'new york': { accommodation: 50, food: 25, transport: 8, activities: 12, emergency: 5 },
+            'thailand': { accommodation: 20, food: 15, transport: 20, activities: 35, emergency: 10 },
+            'rome': { accommodation: 35, food: 28, transport: 12, activities: 20, emergency: 5 },
+            'barcelona': { accommodation: 30, food: 25, transport: 15, activities: 25, emergency: 5 },
+            'amsterdam': { accommodation: 40, food: 30, transport: 10, activities: 15, emergency: 5 },
+            'dubai': { accommodation: 45, food: 20, transport: 15, activities: 15, emergency: 5 },
+            'india': { accommodation: 1660, food: 830, transport: 415, activities: 830, emergency: 415 },
+            'default': { accommodation: 35, food: 25, transport: 15, activities: 20, emergency: 5 }
+        };
+
+        const tripAdviceData = {
+            'paris': [
+                '🥐 Book accommodations in advance, especially during summer',
+                '🚇 Get a weekly metro pass for easy transportation',
+                '🍷 Try local bistros instead of tourist restaurants',
+                '🎨 Many museums are free on first Sunday mornings'
+            ],
+            'tokyo': [
+                '🏨 Consider capsule hotels for budget accommodation',
+                '🍜 Eat at convenience stores and local ramen shops',
+                '🚄 Get a JR Pass if traveling between cities',
+                '🌸 Visit during cherry blossom season for best experience'
+            ],
+            'bali': [
+                '🏖 Stay in Ubud for culture, Canggu for beaches',
+                '🛵 Rent a scooter for easy island exploration',
+                '🍽 Local warungs offer authentic and cheap meals',
+                '💆‍♀ Budget extra for spa treatments and activities'
+            ],
+            'london': [
+                '🏰 Many museums and galleries offer free admission',
+                '🚇 Get an Oyster card for public transport savings',
+                '🍺 Try traditional pubs for authentic British experience',
+                '☂️ Always carry an umbrella for unpredictable weather'
+            ],
+            'new york': [
+                '🗽 Buy MetroCard for subway and bus transportation',
+                '🍕 Try authentic NY pizza and deli sandwiches',
+                '🎭 Book Broadway shows in advance for better prices',
+                '🌳 Central Park and many attractions are free'
+            ],
+            'thailand': [
+                '🏛 Dress modestly when visiting temples',
+                '🛶 Try floating markets for authentic experience',
+                '🌶 Start with mild spice levels in local food',
+                '💆‍♀ Thai massages are affordable and authentic'
+            ],
+            'india': [
+                '🕌 Respect religious sites — remove shoes and dress modestly',
+                '🍛 Try local thalis for a full Indian meal experience',
+                '💧 Always drink bottled or filtered water',
+                '🛕 Temples may have separate queues for foreigners and locals',
+                '🚗 Use prepaid taxis or trusted apps like Ola/Uber',
+                '💱 Carry some cash — not all places accept cards/UPI',
+                '🎭 Embrace the diversity — culture and language change every 100km',
+                '🧣 Cover your head when entering Sikh gurudwaras like Golden Temple',
+                '🪔 Festivals like Diwali and Holi offer vibrant cultural experiences',
+                '📵 Mobile signal can be weak in remote areas — download offline maps'
+            ],
+            'default': [
+                '💡 Research local transportation options',
+                '🏨 Book accommodations with good reviews',
+                '🍽 Try local cuisine for authentic experiences',
+                '📱 Download offline maps and translation apps'
+            ]
+        };
+
+        const destinationAttractions = {
+            'paris': [
+                { name: 'Eiffel Tower', icon: '🗼', cost: '$25' },
+                { name: 'Louvre Museum', icon: '🎨', cost: '$17' },
+                { name: 'Seine River Cruise', icon: '🚢', cost: '$15' },
+                { name: 'Arc de Triomphe', icon: '🏛', cost: '$13' },
+                { name: 'Notre-Dame Cathedral', icon: '⛪', cost: 'Free' },
+                { name: 'Montmartre District', icon: '🎭', cost: 'Free' }
+            ],
+            'tokyo': [
+                { name: 'Tokyo Skytree', icon: '🏗', cost: '$18' },
+                { name: 'Senso-ji Temple', icon: '⛩', cost: 'Free' },
+                { name: 'Shibuya Crossing', icon: '🚶‍♂️', cost: 'Free' },
+                { name: 'Tsukiji Fish Market', icon: '🐟', cost: '$10' },
+                { name: 'Imperial Palace', icon: '🏯', cost: 'Free' },
+                { name: 'Harajuku District', icon: '🌈', cost: 'Free' }
+            ],
+            'bali': [
+                { name: 'Tanah Lot Temple', icon: '🏛', cost: '$3' },
+                { name: 'Rice Terraces', icon: '🌾', cost: '$2' },
+                { name: 'Beach Clubs', icon: '🏖', cost: '$20' },
+                { name: 'Monkey Forest', icon: '🐵', cost: '$3' },
+                { name: 'Volcano Trek', icon: '🌋', cost: '$45' },
+                { name: 'Traditional Spa', icon: '💆‍♀️', cost: '$15' }
+            ],
+            'london': [
+                { name: 'Big Ben', icon: '🕰', cost: 'Free' },
+                { name: 'British Museum', icon: '🏛', cost: 'Free' },
+                { name: 'Thames Cruise', icon: '🚢', cost: '$12' },
+                { name: 'Tower of London', icon: '🏰', cost: '$30' },
+                { name: 'London Eye', icon: '🎡', cost: '$27' },
+                { name: 'Camden Market', icon: '🛍', cost: 'Free' }
+            ],
+            'new york': [
+                { name: 'Statue of Liberty', icon: '🗽', cost: '$23' },
+                { name: 'Central Park', icon: '🌳', cost: 'Free' },
+                { name: 'Broadway Show', icon: '🎭', cost: '$75' },
+                { name: 'Empire State Building', icon: '🏢', cost: '$37' },
+                { name: 'Brooklyn Bridge', icon: '🌉', cost: 'Free' },
+                { name: 'Times Square', icon: '🌟', cost: 'Free' }
+            ],
+            'thailand': [
+                { name: 'Grand Palace', icon: '🏰', cost: '$15' },
+                { name: 'Floating Market', icon: '🛶', cost: '$10' },
+                { name: 'Thai Massage', icon: '💆‍♀️', cost: '$8' },
+                { name: 'Elephant Sanctuary', icon: '🐘', cost: '$50' },
+                { name: 'Temple Tour', icon: '⛩', cost: '$20' },
+                { name: 'Night Market', icon: '🌙', cost: '$5' }
+            ],
+            'india': [
+                { name: 'Taj Mahal', icon: '🏰', cost: '₹50 (Indians)' },
+                { name: 'Qutub Minar', icon: '🕌', cost: '₹30 (Indians)' },
+                { name: 'Red Fort', icon: '🧱', cost: '₹35 (Indians)' },
+                { name: 'Gateway of India', icon: '🚪', cost: 'Free' },
+                { name: 'Mysore Palace', icon: '🏯', cost: '₹70 (Indians)' },
+                { name: 'Amber Fort, Jaipur', icon: '🏜', cost: '₹100 (Indians)' },
+                { name: 'Charminar, Hyderabad', icon: '🕋', cost: '₹25 (Indians)' },
+                { name: 'Golden Temple, Amritsar', icon: '🌟', cost: 'Free' },
+                { name: 'Meenakshi Temple, Madurai', icon: '🌺', cost: 'Free' },
+                { name: 'Sundarbans National Park', icon: '🌳', cost: '₹60 (Indians)' }
+            ]
+        };
+
+        // Smart budget trip type selection
+        document.addEventListener('DOMContentLoaded', function () {
+            const smartTripTypeBtns = document.querySelectorAll('.smart-trip-type-btn');
+            smartTripTypeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    smartTripTypeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSmartTripType = btn.dataset.type;
+
+                    // Update group size based on trip type
+                    const groupSizeInput = document.getElementById('smartGroupSize');
+                    switch (currentSmartTripType) {
+                        case 'solo':
+                            groupSizeInput.value = 1;
+                            break;
+                        case 'couple':
+                            groupSizeInput.value = 2;
+                            break;
+                        case 'friends':
+                            groupSizeInput.value = 4;
+                            break;
+                    }
+                });
+            });
+
+            // Calculate button event listener
+            document.getElementById('calculateSmartBtn').addEventListener('click', calculateSmartBudget);
+        });
+
+        function calculateSmartBudget() {
+            const destination = document.getElementById('smartTripDestination').value.toLowerCase().trim();
+            const days = parseInt(document.getElementById('smartTripDays').value) || 0;
+            const groupSize = parseInt(document.getElementById('smartGroupSize').value) || 1;
+            const totalBudget = parseInt(document.getElementById('smartTotalBudget').value) || 0;
+
+            if (!destination || !days || !totalBudget) {
+                alert('Please fill in all trip details!');
+                return;
+            }
+
+            // Get budget percentages for destination
+            const budgetPercentages = destinationBudgetData[destination] || destinationBudgetData['default'];
+
+            // Calculate amounts
+            const accommodationAmount = Math.round((totalBudget * budgetPercentages.accommodation) / 100);
+            const foodAmount = Math.round((totalBudget * budgetPercentages.food) / 100);
+            const transportAmount = Math.round((totalBudget * budgetPercentages.transport) / 100);
+            const activitiesAmount = Math.round((totalBudget * budgetPercentages.activities) / 100);
+            const emergencyAmount = Math.round((totalBudget * budgetPercentages.emergency) / 100);
+
+            // Update UI
+            document.getElementById('smartAccommodation').textContent = `$${accommodationAmount}`;
+            document.getElementById('smartFood').textContent = `$${foodAmount}`;
+            document.getElementById('smartTransport').textContent = `$${transportAmount}`;
+            document.getElementById('smartActivities').textContent = `$${activitiesAmount}`;
+            document.getElementById('smartEmergency').textContent = `$${emergencyAmount}`;
+
+            const perPerson = Math.round(totalBudget / groupSize);
+            const perDay = Math.round(totalBudget / days);
+
+            document.getElementById('smartTotalDisplay').textContent = `$${totalBudget}`;
+            document.getElementById('smartPerPerson').textContent = `$${perPerson}`;
+            document.getElementById('smartPerDay').textContent = `$${perDay}`;
+
+            // Update trip advice
+            updateSmartTripAdvice(destination, days, groupSize, totalBudget);
+
+            // Update map
+            updateSmartBudgetMap(destination);
+        }
+
+        function updateSmartTripAdvice(destination, days, groupSize, budget) {
+            const adviceContainer = document.getElementById('smartTripAdvice');
+            const advice = tripAdviceData[destination] || tripAdviceData['default'];
+
+            let adviceHTML = '';
+
+            // Budget advice
+            const perPersonPerDay = Math.round(budget / (groupSize * days));
+            if (perPersonPerDay < 50) {
+                adviceHTML += `<div class="advice-item warning">
+                    <span class="advice-icon">⚠️</span>
+                    <span>Budget is tight - consider hostels and street food</span>
+                </div>`;
+            } else if (perPersonPerDay > 200) {
+                adviceHTML += `<div class="advice-item success">
+                    <span class="advice-icon">✨</span>
+                    <span>Great budget! You can enjoy premium experiences</span>
+                </div>`;
+            }
+
+            // Duration advice
+            if (days < 3) {
+                adviceHTML += `<div class="advice-item info">
+                    <span class="advice-icon">⏰</span>
+                    <span>Short trip - focus on must-see attractions</span>
+                </div>`;
+            }
+
+            // Destination-specific advice
+            advice.forEach(tip => {
+                adviceHTML += `<div class="advice-item">
+                    <span class="advice-icon">💡</span>
+                    <span>${tip}</span>
+                </div>`;
+            });
+
+            adviceContainer.innerHTML = adviceHTML;
+        }
+
+        function getDestinationCoords(destination) {
+            const coords = {
+                'paris': [48.8566, 2.3522],
+                'tokyo': [35.6762, 139.6503],
+                'bali': [-8.3405, 115.0920],
+                'london': [51.5074, -0.1278],
+                'new york': [40.7128, -74.0060],
+                'thailand': [13.7563, 100.5018],
+                'rome': [41.9028, 12.4964],
+                'barcelona': [41.3851, 2.1734],
+                'amsterdam': [52.3676, 4.9041],
+                'dubai': [25.2048, 55.2708],
+                'taj mahal': [27.1751, 78.0421],
+                'qutub minar': [28.5244, 77.1855],
+                'red fort': [28.6562, 77.2410],
+                'gateway of india': [18.9219, 72.8347],
+                'mysore palace': [12.3051, 76.6551],
+                'amber fort': [26.9855, 75.8513],
+                'charminar': [17.3616, 78.4747],
+                'golden temple': [31.6200, 74.8765],
+                'meenakshi temple': [9.9195, 78.1190],
+                'sundarbans national park': [21.9497, 88.8915]
+            };
+            return coords[destination] || [48.8566, 2.3522];
+        }
+
+        function initSmartBudgetMap() {
+            if (smartBudgetMap) {
+                smartBudgetMap.remove();
+            }
+
+            const coords = [48.8566, 2.3522]; // Default to Paris
+            smartBudgetMap = L.map('smartBudgetMap').setView(coords, 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(smartBudgetMap);
+
+            L.marker(coords).addTo(smartBudgetMap)
+                .bindPopup('Paris, France')
+                .openPopup();
+        }
+
+        function updateSmartBudgetMap(destination) {
+            if (!smartBudgetMap) {
+                initSmartBudgetMap();
+                return;
+            }
+
+            // Get coordinates for destination
+            const coords = getDestinationCoords(destination);
+
+            // Clear existing markers
+            smartBudgetMap.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    smartBudgetMap.removeLayer(layer);
+                }
+            });
+
+            // Update map view and marker
+            smartBudgetMap.setView(coords, 10);
+            L.marker(coords).addTo(smartBudgetMap)
+                .bindPopup(destination.charAt(0).toUpperCase() + destination.slice(1))
+                .openPopup();
+
+            // Update attractions
+            updateSmartAttractions(destination);
+        }
+
+        function updateSmartAttractions(destination) {
+            const attractionsGrid = document.getElementById('smartAttractionsGrid');
+            const attractions = destinationAttractions[destination] || [
+                { name: 'Local Attractions', icon: '📍', cost: 'Varies' },
+                { name: 'Museums', icon: '🏛', cost: '$10-20' },
+                { name: 'Local Tours', icon: '🚌', cost: '$30-50' }
+            ];
+
+            attractionsGrid.innerHTML = attractions.map(attraction => `
+                <div class="attraction-card">
+                    <div class="attraction-icon">${attraction.icon}</div>
+                    <div class="attraction-info">
+                        <h4>${attraction.name}</h4>
+                        <p class="attraction-cost">${attraction.cost}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initPlannerMap() {
+            if (plannerMapInstance) {
+                plannerMapInstance.remove();
+            }
+
+            const coords = [48.8566, 2.3522]; // Default to Paris
+            plannerMapInstance = L.map('plannerMap').setView(coords, 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(plannerMapInstance);
+
+            L.marker(coords).addTo(plannerMapInstance)
+                .bindPopup('Paris, France')
+                .openPopup();
+        }
+
+        function updatePlannerMap(destination) {
+            if (!plannerMapInstance) {
+                initPlannerMap();
+                return;
+            }
+
+            const coords = getDestinationCoords(destination.toLowerCase());
+
+            // Clear existing markers
+            plannerMapInstance.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    plannerMapInstance.removeLayer(layer);
+                }
+            });
+
+            // Update map view and marker
+            plannerMapInstance.setView(coords, 10);
+            L.marker(coords).addTo(plannerMapInstance)
+                .bindPopup(destination)
+                .openPopup();
+        }
+
+        // Memory functions
+        function filterMemories(filter) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            console.log('Filtering memories by:', filter);
+        }
+
+        // File upload handler
+        document.addEventListener('DOMContentLoaded', function () {
+            const photoUpload = document.getElementById('photoUpload');
+            if (photoUpload) {
+                photoUpload.addEventListener('change', function (e) {
+                    const files = e.target.files;
+                    console.log('Uploaded files:', files.length);
+                    // Handle file upload logic here
+                });
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Handle logout logic
+                console.log('Logging out...');
+                // Redirect to login page
+                window.location.href = 'main.html';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set default values
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+
+            // Load default data
+            console.log('TripPlanner Dashboard initialized');
+        });
+
+        // Responsive handling
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        });
+    </script>
+    <!-- Budget Script -->
+    <script src="smart-budget.js"></script> <!-- Create this file with the smart logic you shared -->
+
+    <!-- 👇 Appwrite Username Display Script -->
+    <script type="module">
+        import { Client, Account } from "https://cdn.jsdelivr.net/npm/appwrite@13.0.1/+esm";
+
+        const client = new Client();
+        const account = new Account(client);
+
+        client
+            .setEndpoint("https://fra.cloud.appwrite.io/v1") // ✅ Your endpoint
+            .setProject("68860401002a4d8a099f");             // ✅ Your project ID
+
+        account.get()
+            .then(user => {
+                const nameSpan = document.getElementById("userName");
+                if (nameSpan) {
+                    nameSpan.textContent = `Welcome back, ${user.name || user.email.split('@')[0]}!`;
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching Appwrite user:", error);
+            });
+    </script>
 </body>
+
 </html>
