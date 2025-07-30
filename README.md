@@ -87,6 +87,7 @@ We welcome contributions from the community! Here's how you can help:
 
 - **[Tanishq747Shivasharan](https://github.com/Tanishq747Shivasharan)** - Project Creator & Lead Developer
 - **[ARYANJAKKAL123](https://github.com/ARYANJAKKAL123)** - Contributor
+- **[https://github.com/Yash-Javnjal]**-contributor
 
 ## 📝 Development
 
