@@ -113,6 +113,8 @@
                     </div>
 
                     <!-- Login Form -->
+                     <p id="loginSuccessMessage" style="color: green; margin-top: 10px;"></p>
+
                     <form id="loginForm" class="auth-form active">
                         <div class="form-group"><input type="email" id="loginEmail" placeholder="Email Address"
                                 required /></div>
@@ -132,8 +134,11 @@
                                 class="fas fa-arrow-right"></i></button>
                         <p class="auth-link">Demo: admin@tripplanner.com / password</p>
                     </form>
+                  
 
                     <!-- Register Form -->
+                     <p id="registerSuccessMessage" style="color: green; margin-top: 10px;"></p>
+
                     <form id="registerForm" class="auth-form">
                         <div class="form-group"><input type="text" id="registerName" placeholder="Full Name" required />
                         </div>
@@ -162,6 +167,7 @@
                         <button type="submit" class="auth-btn"><span>Create Account</span><i
                                 class="fas fa-arrow-right"></i></button>
                     </form>
+                   
                 </div>
             </div>
         </div>
@@ -288,7 +294,7 @@
     <script>
         const client = new Appwrite.Client();
         const account = new Appwrite.Account(client);
-        client.setEndpoint("https://fra.cloud.appwrite.io/v1").setProject("68860401002a4d8a099f");
+        client.setEndpoint("https://fra.cloud.appwrite.io/v1").setProject("688097ab0027fd434bf4");
 
         // Theme Toggle Functionality
         document.getElementById('themeToggle').addEventListener('change', function() {
@@ -343,68 +349,95 @@
             }
         });
 
-        // Login Handler
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = loginEmail.value.trim();
-            const password = loginPassword.value.trim();
-            const rememberMe = document.getElementById('rememberMe').checked;
+        // LOGIN HANDLER
+        
 
-            if (!email || !password) return alert("Fill all fields.");
-            if (password.length < 8) return alert("Password must be 8+ characters.");
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const rememberMe = document.getElementById('rememberMe').checked;
+    const loginMessage = document.getElementById('loginSuccessMessage');
 
-            try {
-                await account.createEmailSession(email, password);
-                const user = await account.get();
-                
-                if (rememberMe) {
-                    localStorage.setItem("currentUser", JSON.stringify(user));
-                    localStorage.setItem("rememberUser", "true");
-                } else {
-                    sessionStorage.setItem("currentUser", JSON.stringify(user));
-                }
-                
-                window.location.href = "dashboard.html";
-            } catch (error) {
-                alert("Login failed. Check credentials.");
-                console.error(error);
-            }
-        });
+    loginMessage.textContent = "";
 
-        // Register Handler
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = registerName.value.trim();
-            const email = registerEmail.value.trim();
-            const password = registerPassword.value.trim();
-            const agreeTerms = document.getElementById('agreeTerms').checked;
-            const newsletter = document.getElementById('newsletter').checked;
+    if (!email || !password) return alert("Fill all fields.");
+    if (password.length < 8) return alert("Password must be 8+ characters.");
 
-            if (!name || !email || !password) return alert("Fill all fields.");
-            if (!agreeTerms) return alert("You must agree to terms & conditions.");
-            if (password.length < 8) return alert("Password must be 8+ characters.");
+    try {
+        await account.createEmailSession(email, password);
+        const user = await account.get();
 
-            try {
-                await account.create('unique()', email, password, name);
-                await account.createEmailSession(email, password);
-                const user = await account.get();
-                
-                // Save newsletter preference
-                localStorage.setItem("newsletter", newsletter);
-                localStorage.setItem("currentUser", JSON.stringify(user));
-                
-                window.location.href = "dashboard.html";
-            } catch (error) {
-                if (error.code === 409) {
-                    alert("Email already exists. Please login.");
-                } else {
-                    alert("Registration failed.");
-                }
-                console.error(error);
-            }
-        });
+        if (rememberMe) {
+            localStorage.setItem("currentUser", JSON.stringify(user));
+            localStorage.setItem("rememberUser", "true");
+        } else {
+            sessionStorage.setItem("currentUser", JSON.stringify(user));
+        }
 
-        // Tab Switch Logic
+        loginMessage.textContent = "Login successful!";
+        loginMessage.style.color = "green";
+
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 1500);
+    } catch (error) {
+        loginMessage.textContent = "Login failed. Check credentials.";
+        loginMessage.style.color = "red";
+        console.error(error);
+    }
+});
+
+// REGISTER HANDLER
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value.trim();
+    const newsletter = document.getElementById('newsletter').checked;
+    const registerMessage = document.getElementById('registerSuccessMessage');
+
+    registerMessage.textContent = "";
+
+    if (!name || !email || !password) return alert("Fill all fields.");
+    if (password.length < 8) return alert("Password must be 8+ characters.");
+
+    try {
+        await account.create('unique()', email, password, name);
+        await account.createEmailSession(email, password);
+        const user = await account.get();
+
+        localStorage.setItem("newsletter", newsletter);
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        localStorage.setItem("savedEmail", email);
+        localStorage.setItem("savedPassword", password);
+
+
+        registerMessage.textContent = "Registration successful!";
+        registerMessage.style.color = "green";
+
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 1500);
+    } catch (error) {
+        if (error.code === 409) {
+            registerMessage.textContent = "Email already exists. Please login.";
+        } else {
+            registerMessage.textContent = "Registration failed.";
+        }
+        registerMessage.style.color = "red";
+        console.error(error);
+    }
+});
+window.addEventListener("DOMContentLoaded", () => {
+    const savedEmail = localStorage.getItem("savedEmail");
+    const savedPassword = localStorage.getItem("savedPassword");
+    if (savedEmail && savedPassword) {
+        document.getElementById("loginEmail").value = savedEmail;
+        document.getElementById("loginPassword").value = savedPassword;
+    }
+});
+ // Tab Switch Logic
         function switchTab(tab) {
             document.querySelectorAll(".auth-tab").forEach(btn => btn.classList.remove("active"));
             document.querySelectorAll(".auth-form").forEach(form => form.classList.remove("active"));
@@ -425,3 +458,4 @@
 </body>
 
 </html>
+
