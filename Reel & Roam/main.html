@@ -20,14 +20,14 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <i class="fas fa-plane"></i><span>TripPlanner</span>
+                <i class="fas fa-plane"></i><span>Reel & Roam</span>
             </div>
             <div class="nav-menu" id="navMenu">
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="#contact" class="nav-link">Contact</a>
-                
+
                 <!-- Theme Toggle in Navigation -->
                 <div class="toggle-container nav-toggle-theme">
                     <label class="toggle-switch toggle-small toggle-with-icons" title="Toggle Dark Mode">
@@ -113,14 +113,12 @@
                     </div>
 
                     <!-- Login Form -->
-                     <p id="loginSuccessMessage" style="color: green; margin-top: 10px;"></p>
-
                     <form id="loginForm" class="auth-form active">
                         <div class="form-group"><input type="email" id="loginEmail" placeholder="Email Address"
                                 required /></div>
                         <div class="form-group"><input type="password" id="loginPassword" placeholder="Password"
                                 required /></div>
-                        
+
                         <!-- Remember Me Toggle -->
                         <div class="toggle-container" style="margin-bottom: 1rem;">
                             <label class="toggle-label">Remember me</label>
@@ -129,16 +127,13 @@
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
-                        
+
                         <button type="submit" class="auth-btn"><span>Login</span><i
                                 class="fas fa-arrow-right"></i></button>
                         <p class="auth-link">Demo: admin@tripplanner.com / password</p>
                     </form>
-                  
 
                     <!-- Register Form -->
-                     <p id="registerSuccessMessage" style="color: green; margin-top: 10px;"></p>
-
                     <form id="registerForm" class="auth-form">
                         <div class="form-group"><input type="text" id="registerName" placeholder="Full Name" required />
                         </div>
@@ -146,7 +141,7 @@
                                 required /></div>
                         <div class="form-group"><input type="password" id="registerPassword" placeholder="Password"
                                 required /></div>
-                        
+
                         <!-- Terms and Newsletter Toggles -->
                         <div class="toggle-container" style="margin-bottom: 0.5rem;">
                             <label class="toggle-label">I agree to terms & conditions</label>
@@ -155,7 +150,7 @@
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
-                        
+
                         <div class="toggle-container" style="margin-bottom: 1rem;">
                             <label class="toggle-label">Subscribe to newsletter</label>
                             <label class="toggle-switch toggle-small">
@@ -163,11 +158,10 @@
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
-                        
+
                         <button type="submit" class="auth-btn"><span>Create Account</span><i
                                 class="fas fa-arrow-right"></i></button>
                     </form>
-                   
                 </div>
             </div>
         </div>
@@ -177,12 +171,13 @@
     <section id="features" class="features">
         <div class="container">
             <h2 class="section-title">Why Choose TripPlanner?</h2>
-            
+
             <!-- Feature Toggles Section -->
             <div style="max-width: 800px; margin: 0 auto 4rem;">
-                <h3 style="text-align: center; margin-bottom: 2rem; color: var(--primary); font-size: 1.5rem;">Customize Your Experience</h3>
+                <h3 style="text-align: center; margin-bottom: 2rem; color: var(--primary); font-size: 1.5rem;">Customize
+                    Your Experience</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
-                    
+
                     <!-- Smart Features Card -->
                     <div class="toggle-card">
                         <div class="toggle-card-content">
@@ -190,14 +185,15 @@
                                 <i class="fas fa-brain" style="margin-right: 0.5rem; color: var(--accent);"></i>
                                 Smart Recommendations
                             </div>
-                            <div class="toggle-card-description">Get AI-powered destination and activity suggestions</div>
+                            <div class="toggle-card-description">Get AI-powered destination and activity suggestions
+                            </div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="smartRecommendations" checked>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
-                    
+
                     <!-- Budget Tracking Card -->
                     <div class="toggle-card">
                         <div class="toggle-card-content">
@@ -212,7 +208,7 @@
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
-                    
+
                     <!-- Smart Alerts Card -->
                     <div class="toggle-card">
                         <div class="toggle-card-content">
@@ -227,7 +223,7 @@
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
-                    
+
                     <!-- Memory Gallery Card -->
                     <div class="toggle-card">
                         <div class="toggle-card-content">
@@ -242,10 +238,10 @@
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
-                    
+
                 </div>
             </div>
-            
+
             <div class="features-grid">
                 <div class="feature-item">
                     <div class="feature-icon"><i class="fas fa-brain"></i></div>
@@ -291,160 +287,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
-    <script>
-        const client = new Appwrite.Client();
-        const account = new Appwrite.Account(client);
-        client.setEndpoint("https://fra.cloud.appwrite.io/v1").setProject("688097ab0027fd434bf4");
-
-        // Theme Toggle Functionality
-        document.getElementById('themeToggle').addEventListener('change', function() {
-            document.body.classList.toggle('dark-theme', this.checked);
-            localStorage.setItem('darkMode', this.checked);
-        });
-
-        // Load saved theme preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.getElementById('themeToggle').checked = true;
-            document.body.classList.add('dark-theme');
-        }
-
-        // Video Controls
-        document.getElementById('autoplayVideos').addEventListener('change', function() {
-            const videos = document.querySelectorAll('.bg-video');
-            videos.forEach(video => {
-                if (this.checked) {
-                    video.play();
-                } else {
-                    video.pause();
-                }
-            });
-        });
-
-        document.getElementById('videoSound').addEventListener('change', function() {
-            const videos = document.querySelectorAll('.bg-video');
-            videos.forEach(video => {
-                video.muted = !this.checked;
-            });
-        });
-
-        // Feature toggles functionality
-        const featureToggles = {
-            smartRecommendations: document.getElementById('smartRecommendations'),
-            budgetTracking: document.getElementById('budgetTracking'),
-            smartAlerts: document.getElementById('smartAlerts'),
-            memoryGallery: document.getElementById('memoryGallery')
-        };
-
-        Object.keys(featureToggles).forEach(feature => {
-            featureToggles[feature].addEventListener('change', function() {
-                console.log(`${feature}: ${this.checked ? 'enabled' : 'disabled'}`);
-                // Here you can add functionality to enable/disable features
-                localStorage.setItem(feature, this.checked);
-            });
-
-            // Load saved preferences
-            const saved = localStorage.getItem(feature);
-            if (saved !== null) {
-                featureToggles[feature].checked = saved === 'true';
-            }
-        });
-
-        // LOGIN HANDLER
-        
-
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-    const rememberMe = document.getElementById('rememberMe').checked;
-    const loginMessage = document.getElementById('loginSuccessMessage');
-
-    loginMessage.textContent = "";
-
-    if (!email || !password) return alert("Fill all fields.");
-    if (password.length < 8) return alert("Password must be 8+ characters.");
-
-    try {
-        await account.createEmailSession(email, password);
-        const user = await account.get();
-
-        if (rememberMe) {
-            localStorage.setItem("currentUser", JSON.stringify(user));
-            localStorage.setItem("rememberUser", "true");
-        } else {
-            sessionStorage.setItem("currentUser", JSON.stringify(user));
-        }
-
-        loginMessage.textContent = "Login successful!";
-        loginMessage.style.color = "green";
-
-        setTimeout(() => {
-            window.location.href = "dashboard.html";
-        }, 1500);
-    } catch (error) {
-        loginMessage.textContent = "Login failed. Check credentials.";
-        loginMessage.style.color = "red";
-        console.error(error);
-    }
-});
-
-// REGISTER HANDLER
-document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const password = document.getElementById('registerPassword').value.trim();
-    const newsletter = document.getElementById('newsletter').checked;
-    const registerMessage = document.getElementById('registerSuccessMessage');
-
-    registerMessage.textContent = "";
-
-    if (!name || !email || !password) return alert("Fill all fields.");
-    if (password.length < 8) return alert("Password must be 8+ characters.");
-
-    try {
-        await account.create('unique()', email, password, name);
-        await account.createEmailSession(email, password);
-        const user = await account.get();
-
-        localStorage.setItem("newsletter", newsletter);
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        localStorage.setItem("savedEmail", email);
-        localStorage.setItem("savedPassword", password);
-
-
-        registerMessage.textContent = "Registration successful!";
-        registerMessage.style.color = "green";
-
-        setTimeout(() => {
-            window.location.href = "dashboard.html";
-        }, 1500);
-    } catch (error) {
-        if (error.code === 409) {
-            registerMessage.textContent = "Email already exists. Please login.";
-        } else {
-            registerMessage.textContent = "Registration failed.";
-        }
-        registerMessage.style.color = "red";
-        console.error(error);
-    }
-});
-window.addEventListener("DOMContentLoaded", () => {
-    const savedEmail = localStorage.getItem("savedEmail");
-    const savedPassword = localStorage.getItem("savedPassword");
-    if (savedEmail && savedPassword) {
-        document.getElementById("loginEmail").value = savedEmail;
-        document.getElementById("loginPassword").value = savedPassword;
-    }
-});
- // Tab Switch Logic
-        function switchTab(tab) {
-            document.querySelectorAll(".auth-tab").forEach(btn => btn.classList.remove("active"));
-            document.querySelectorAll(".auth-form").forEach(form => form.classList.remove("active"));
-            document.querySelector(`.auth-tab[onclick*="${tab}"]`).classList.add("active");
-            document.getElementById(`${tab}Form`).classList.add("active");
-        }
-    </script>
 
     <script src="https://unpkg.com/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js"></script>
@@ -455,7 +297,7 @@ window.addEventListener("DOMContentLoaded", () => {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="app.js"></script>
     <script src="animations.js"></script>
+    <script src="auth.js"></script>
 </body>
 
 </html>
-
