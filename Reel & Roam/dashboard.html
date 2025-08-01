@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Memory Gallery with Appwrite Integration and Theme Toggle</title>
+    <link rel="stylesheet" href="dashboard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body class="dashboard-body">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-plane"></i>
+            <span>Reel 'N Rome</span>
+            <a href="main.html" class="back-to-site"
+                style="font-size: 0.8rem; color: #666; text-decoration: none; margin-top: 5px; display: block;">
+                ← Back to Site
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#plan-trip" class="nav-item" onclick="showSection('plan-trip')">
+                <i class="fas fa-map"></i>
+                <span>Plan Trip</span>
+            </a>
+            <a href="#budget" class="nav-item" onclick="showSection('budget')">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Smart Budget</span>
+            </a>
+            <a href="#memories" class="nav-item" onclick="showSection('memories')">
+                <i class="fas fa-camera"></i>
+                <span>Memories</span>
+            </a>
+            <a href="#download" class="nav-item" onclick="showSection('download')">
+                <i class="fas fa-file-download"></i>
+                <span>Download Plans</span>
+            </a>
+            <a href="#admin" class="nav-item admin-only" onclick="showSection('admin')" style="display: none;">
+                <i class="fas fa-cog"></i>
+                <span>Admin</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-right">
+                <!-- Theme Toggle -->
+                <div class="theme-toggle-container">
+                    <div class="toggle-switch toggle-with-icons" onclick="toggleTheme()">
+                        <input type="checkbox" id="themeToggle" />
+                        <span class="toggle-slider">
+                            <i class="fas fa-sun toggle-icon-left"></i>
+                            <i class="fas fa-moon toggle-icon-right"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span id="userName">Welcome back!</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="content-section active">
+            <div class="section-header">
+                <h1>Dashboard</h1>
+                <p>Your travel overview</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalTrips">5</h3>
+                        <p>Total Trips</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="countriesVisited">8</h3>
+                        <p>Countries Visited</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalSpent">₹2,04,500</h3>
+                        <p>Total Spent</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalPhotos">124</h3>
+                        <p>Memories</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Trips -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2>Recent Trips</h2>
+                    <button class="btn-primary" onclick="showSection('plan-trip')">Plan New Trip</button>
+                </div>
+                <div class="trips-list" id="recentTrips">
+                    <div class="trip-item">
+                        <div class="trip-image">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="trip-details">
+                            <h4>Paris Adventure</h4>
+                            <p>May 15-22, 2024 • 7 days</p>
+                            <span class="trip-status completed">Completed</span>
+                        </div>
+                        <div class="trip-budget">₹1,00,000</div>
+                    </div>
+                    <div class="trip-item">
+                        <div class="trip-image">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="trip-details">
+                            <h4>Tokyo Discovery</h4>
+                            <p>June 10-17, 2024 • 8 days</p>
+                            <span class="trip-status upcoming">Upcoming</span>
+                        </div>
+                        <div class="trip-budget">₹1,50,000</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plan Trip Section -->
+        <section id="plan-trip-section" class="content-section">
+            <div class="section-header">
+                <h1>Plan New Trip</h1>
+                <p>Create your next adventure</p>
+            </div>
+
+            <div class="trip-planner">
+                <!-- Trip Type Selection -->
+                <div class="planner-card">
+                    <h3>Select Trip Type</h3>
+                    <div class="trip-types">
+                        <div class="trip-type" onclick="selectTripType('solo')">
+                            <i class="fas fa-user"></i>
+                            <h4>Solo</h4>
+                            <p>Personal adventure</p>
+                        </div>
+                        <div class="trip-type" onclick="selectTripType('couple')">
+                            <i class="fas fa-heart"></i>
+                            <h4>Couple</h4>
+                            <p>Romantic getaway</p>
+                        </div>
+                        <div class="trip-type" onclick="selectTripType('friends')">
+                            <i class="fas fa-users"></i>
+                            <h4>Friends</h4>
+                            <p>Group adventure</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destination Selection -->
+                <div class="planner-card">
+                    <h3>Choose Destination</h3>
+                    <div class="destination-search">
+                        <input type="text" id="destinationInput" placeholder="Search destinations..." />
+                        <button onclick="searchDestinations()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="destinations-grid" id="destinationsGrid">
+                        <div class="destination-card" onclick="selectDestination('Paris')">
+                            <div class="destination-image">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <div class="destination-info">
+                                <h4>Paris, France</h4>
+                                <p>City of Light</p>
+                            </div>
+                        </div>
+                        <div class="destination-card" onclick="selectDestination('Tokyo')">
+                            <div class="destination-image">
+                                <i class="fas fa-torii-gate"></i>
+                            </div>
+                            <div class="destination-info">
+                                <h4>Tokyo, Japan</h4>
+                                <p>Modern Metropolis</p>
+                            </div>
+                        </div>
+                        <div class="destination-card" onclick="selectDestination('Bali')">
+                            <div class="destination-image">
+                                <i class="fas fa-umbrella-beach"></i>
+                            </div>
+                            <div class="destination-info">
+                                <h4>Bali, Indonesia</h4>
+                                <p>Tropical Paradise</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trip Details -->
+                <div class="planner-card">
+                    <h3>Trip Details</h3>
+                    <form id="tripDetailsForm" onsubmit="createTrip(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Trip Title</label>
+                                <input type="text" id="tripTitle" placeholder="My Amazing Trip" />
+                            </div>
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <select id="tripDuration">
+                                    <option value="1-3">1-3 days</option>
+                                    <option value="4-7">4-7 days</option>
+                                    <option value="1-2weeks">1-2 weeks</option>
+                                    <option value="2weeks+">2+ weeks</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <input type="date" id="startDate" />
+                            </div>
+                            <div class="form-group">
+                                <label>Budget (USD)</label>
+                                <input type="number" id="tripBudget" placeholder="1000" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary full-width">Create Trip</button>
+                    </form>
+                </div>
+
+                <!-- Map -->
+                <div class="planner-card">
+                    <h3>Location Map</h3>
+                    <div id="plannerMap" class="trip-map"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Smart Budget Splitter Section -->
+        <section id="budget-section" class="content-section">
+            <div class="section-header">
+                <h1>Smart Budget Splitter</h1>
+                <p>AI-powered budget planning with destination insights</p>
+            </div>
+
+            <div class="smart-budget-container">
+                <!-- Trip Type Selection -->
+                <div class="budget-card">
+                    <h3>Trip Type</h3>
+                    <div class="smart-trip-types">
+                        <button class="smart-trip-type-btn active" data-type="solo">
+                            <i class="fas fa-user"></i>
+                            <span>Solo Travel</span>
+                        </button>
+                        <button class="smart-trip-type-btn" data-type="couple">
+                            <i class="fas fa-heart"></i>
+                            <span>Couple</span>
+                        </button>
+                        <button class="smart-trip-type-btn" data-type="friends">
+                            <i class="fas fa-users"></i>
+                            <span>Friends Group</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Budget Tool -->
+                <div class="budget-tool-grid">
+                    <div class="budget-card">
+                        <h3>Trip Details</h3>
+                        <div class="smart-form">
+                            <input type="text" id="smartTripDestination"
+                                placeholder="Enter destination (e.g., Paris, Tokyo)" class="smart-input" />
+                            <input type="number" id="smartTripDays" placeholder="Number of days" min="1" max="30"
+                                class="smart-input" />
+                            <input type="number" id="smartGroupSize" placeholder="Group size" value="1" min="1" max="20"
+                                class="smart-input" />
+                            <input type="number" id="smartTotalBudget" placeholder="Total budget (₹)" min="1000"
+                                class="smart-input" />
+                            <button id="calculateSmartBtn" class="btn-primary smart-calc-btn">
+                                <i class="fas fa-brain"></i>
+                                Calculate Smart Budget
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="budget-card">
+                        <h3>Smart Budget Breakdown</h3>
+                        <div class="budget-breakdown">
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🏨</div>
+                                <span class="breakdown-label">Accommodation:</span>
+                                <span id="smartAccommodation" class="breakdown-amount">₹0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🍽</div>
+                                <span class="breakdown-label">Food & Drinks:</span>
+                                <span id="smartFood" class="breakdown-amount">₹0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🚗</div>
+                                <span class="breakdown-label">Transportation:</span>
+                                <span id="smartTransport" class="breakdown-amount">₹0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">🎯</div>
+                                <span class="breakdown-label">Activities:</span>
+                                <span id="smartActivities" class="breakdown-amount">₹0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-icon">💰</div>
+                                <span class="breakdown-label">Emergency Fund:</span>
+                                <span id="smartEmergency" class="breakdown-amount">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="budget-card">
+                        <h3>Smart Trip Advice</h3>
+                        <div id="smartTripAdvice" class="trip-advice">
+                            <div class="advice-item">
+                                <span class="advice-icon">💡</span>
+                                <span>Enter your trip details to get personalized advice!</span>
+                            </div>
+                        </div>
+
+                        <div class="budget-summary">
+                            <h4>Budget Summary</h4>
+                            <div class="summary-item">
+                                <span>Total Budget:</span>
+                                <span id="smartTotalDisplay" class="summary-amount">₹0</span>
+                            </div>
+                            <div class="summary-item highlight">
+                                <span>Per Person:</span>
+                                <span id="smartPerPerson" class="summary-amount">₹0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Per Day:</span>
+                                <span id="smartPerDay" class="summary-amount">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map and Attractions -->
+                <div class="budget-card">
+                    <h3>
+                        <i class="fas fa-map-marker-alt"></i>
+                        Destination Map & Attractions
+                    </h3>
+                    <div id="smartBudgetMap" class="smart-map"></div>
+                    <div id="smartAttractionsGrid" class="attractions-grid">
+                        <!-- Attractions will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Enhanced Place Cards Section -->
+                <div class="budget-card">
+                    <h3>
+                        <i class="fas fa-map-marker-alt"></i>
+                        Explore Destinations
+                    </h3>
+                    <p class="section-description">Click on any destination to learn more about it and get travel
+                        insights</p>
+
+                    <div class="place-cards-container">
+                        <!-- Paris Card -->
+                        <div class="place-card" tabindex="0" aria-expanded="false" aria-controls="place-info-paris"
+                            onclick="togglePlaceInfo('paris')"
+                            onkeypress="if(event.key==='Enter'){togglePlaceInfo('paris')}">
+                            <div class="place-card-header">
+                                <div class="place-image">
+                                    <img src="https://images.unsplash.com/photo-1502602898534-37dd6d3935d9?w=400&h=400&fit=crop&crop=center"
+                                        alt="Eiffel Tower, Paris" />
+                                </div>
+                                <div class="place-basic-info">
+                                    <h4>Paris, France</h4>
+                                    <p class="place-subtitle">City of Light</p>
+                                </div>
+                                <div class="place-expand-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="place-card-preview">
+                                <div class="place-stats">
+                                    <span class="stat"><i class="fas fa-rupee-sign"></i> ₹12,500/day</span>
+                                    <span class="stat"><i class="fas fa-calendar"></i> Best: Apr-Jun</span>
+                                    <span class="stat"><i class="fas fa-language"></i> French</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tokyo Card -->
+                        <div class="place-card" tabindex="0" aria-expanded="false" aria-controls="place-info-tokyo"
+                            onclick="togglePlaceInfo('tokyo')"
+                            onkeypress="if(event.key==='Enter'){togglePlaceInfo('tokyo')}">
+                            <div class="place-card-header">
+                                <div class="place-image">
+                                    <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=400&fit=crop&crop=center"
+                                        alt="Senso-ji Temple, Tokyo" />
+                                </div>
+                                <div class="place-basic-info">
+                                    <h4>Tokyo, Japan</h4>
+                                    <p class="place-subtitle">Modern Metropolis</p>
+                                </div>
+                                <div class="place-expand-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="place-card-preview">
+                                <div class="place-stats">
+                                    <span class="stat"><i class="fas fa-rupee-sign"></i> ₹16,500/day</span>
+                                    <span class="stat"><i class="fas fa-calendar"></i> Best: Mar-May</span>
+                                    <span class="stat"><i class="fas fa-language"></i> Japanese</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bali Card -->
+                        <div class="place-card" tabindex="0" aria-expanded="false" aria-controls="place-info-bali"
+                            onclick="togglePlaceInfo('bali')"
+                            onkeypress="if(event.key==='Enter'){togglePlaceInfo('bali')}">
+                            <div class="place-card-header">
+                                <div class="place-image">
+                                    <img src="https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=400&fit=crop&crop=center"
+                                        alt="Tanah Lot Temple, Bali" />
+                                </div>
+                                <div class="place-basic-info">
+                                    <h4>Bali, Indonesia</h4>
+                                    <p class="place-subtitle">Tropical Paradise</p>
+                                </div>
+                                <div class="place-expand-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="place-card-preview">
+                                <div class="place-stats">
+                                    <span class="stat"><i class="fas fa-rupee-sign"></i> ₹6,500/day</span>
+                                    <span class="stat"><i class="fas fa-calendar"></i> Best: Apr-Oct</span>
+                                    <span class="stat"><i class="fas fa-language"></i> Indonesian</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- New York Card -->
+                        <div class="place-card" tabindex="0" aria-expanded="false" aria-controls="place-info-nyc"
+                            onclick="togglePlaceInfo('nyc')"
+                            onkeypress="if(event.key==='Enter'){togglePlaceInfo('nyc')}">
+                            <div class="place-card-header">
+                                <div class="place-image">
+                                    <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=400&fit=crop&crop=center"
+                                        alt="Statue of Liberty, NYC" />
+                                </div>
+                                <div class="place-basic-info">
+                                    <h4>New York City, USA</h4>
+                                    <p class="place-subtitle">The Big Apple</p>
+                                </div>
+                                <div class="place-expand-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="place-card-preview">
+                                <div class="place-stats">
+                                    <span class="stat"><i class="fas fa-rupee-sign"></i> ₹20,500/day</span>
+                                    <span class="stat"><i class="fas fa-calendar"></i> Best: Sep-Nov</span>
+                                    <span class="stat"><i class="fas fa-language"></i> English</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- London Card -->
+                        <div class="place-card" tabindex="0" aria-expanded="false" aria-controls="place-info-london"
+                            onclick="togglePlaceInfo('london')"
+                            onkeypress="if(event.key==='Enter'){togglePlaceInfo('london')}">
+                            <div class="place-card-header">
+                                <div class="place-image">
+                                    <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=400&fit=crop&crop=center"
+                                        alt="Big Ben, London" />
+                                </div>
+                                <div class="place-basic-info">
+                                    <h4>London, UK</h4>
+                                    <p class="place-subtitle">Historic Capital</p>
+                                </div>
+                                <div class="place-expand-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="place-card-preview">
+                                <div class="place-stats">
+                                    <span class="stat"><i class="fas fa-rupee-sign"></i> ₹15,000/day</span>
+                                    <span class="stat"><i class="fas fa-calendar"></i> Best: Jun-Aug</span>
+                                    <span class="stat"><i class="fas fa-language"></i> English</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sydney Card -->
+                        <div class="place-card" tabindex="0" aria-expanded="false" aria-controls="place-info-sydney"
+                            onclick="togglePlaceInfo('sydney')"
+                            onkeypress="if(event.key==='Enter'){togglePlaceInfo('sydney')}">
+                            <div class="place-card-header">
+                                <div class="place-image">
+                                    <img src="https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=400&fit=crop&crop=center"
+                                        alt="Sydney Opera House" />
+                                </div>
+                                <div class="place-basic-info">
+                                    <h4>Sydney, Australia</h4>
+                                    <p class="place-subtitle">Harbor City</p>
+                                </div>
+                                <div class="place-expand-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="place-card-preview">
+                                <div class="place-stats">
+                                    <span class="stat"><i class="fas fa-rupee-sign"></i> ₹13,000/day</span>
+                                    <span class="stat"><i class="fas fa-calendar"></i> Best: Sep-Nov</span>
+                                    <span class="stat"><i class="fas fa-language"></i> English</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Place Information -->
+                    <div class="place-info-container">
+                        <!-- Paris Info -->
+                        <div id="place-info-paris" class="place-info" hidden>
+                            <div class="place-info-header">
+                                <h4><i class="fas fa-landmark"></i> Paris, France</h4>
+                                <button class="close-info-btn" onclick="togglePlaceInfo('paris')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="place-info-content">
+                                <div class="info-section">
+                                    <h5><i class="fas fa-info-circle"></i> Overview</h5>
+                                    <p>Known as the "City of Light," Paris is famous for its art, fashion, gastronomy,
+                                        and culture. The city is home to iconic landmarks including the Eiffel Tower,
+                                        Louvre Museum, and Notre-Dame Cathedral.</p>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-map-marker-alt"></i> Must-See Attractions</h5>
+                                    <div class="attractions-gallery">
+                                        <div class="attraction-item">
+                                            <img src="https://plus.unsplash.com/premium_photo-1661919210043-fd847a58522d?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Eiffel Tower" />
+                                            <div class="attraction-info">
+                                                <h6>Eiffel Tower</h6>
+                                                <p>Iconic iron lattice tower</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1500039436846-25ae2f11882e?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Louvre Museum" />
+                                            <div class="attraction-info">
+                                                <h6>Louvre Museum</h6>
+                                                <p>World's largest art museum</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1576653764709-7d175299e6d9?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Notre-Dame Cathedral" />
+                                            <div class="attraction-info">
+                                                <h6>Notre-Dame Cathedral</h6>
+                                                <p>Gothic masterpiece</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://plus.unsplash.com/premium_photo-1661964026265-6d15b8d0f792?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Champs-Élysées" />
+                                            <div class="attraction-info">
+                                                <h6>Champs-Élysées</h6>
+                                                <p>Famous avenue</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1595540089942-545def48cf3e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Arc de Triomphe" />
+                                            <div class="attraction-info">
+                                                <h6>Arc de Triomphe</h6>
+                                                <p>Historic monument</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-utensils"></i> Local Cuisine</h5>
+                                    <ul>
+                                        <li>Croissants and French pastries</li>
+                                        <li>Escargot (snails)</li>
+                                        <li>Coq au Vin (chicken in wine)</li>
+                                        <li>French onion soup</li>
+                                        <li>Macarons and éclairs</li>
+                                    </ul>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-dollar-sign"></i> Budget Tips</h5>
+                                    <ul>
+                                        <li>Use the Metro for affordable transportation</li>
+                                        <li>Visit museums on free days (first Sunday of month)</li>
+                                        <li>Eat at local bistros instead of tourist restaurants</li>
+                                        <li>Stay in arrondissements 11-20 for better prices</li>
+                                        <li>Buy food from local markets</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tokyo Info -->
+                        <div id="place-info-tokyo" class="place-info" hidden>
+                            <div class="place-info-header">
+                                <h4><i class="fas fa-torii-gate"></i> Tokyo, Japan</h4>
+                                <button class="close-info-btn" onclick="togglePlaceInfo('tokyo')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="place-info-content">
+                                <div class="info-section">
+                                    <h5><i class="fas fa-info-circle"></i> Overview</h5>
+                                    <p>Tokyo is a bustling metropolis blending the ultramodern and the traditional, from
+                                        neon-lit skyscrapers to historic temples. It is known for its cuisine,
+                                        technology, and vibrant culture.</p>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-map-marker-alt"></i> Must-See Attractions</h5>
+                                    <div class="attractions-gallery">
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1706813253696-10ee6332edd3?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Senso-ji Temple" />
+                                            <div class="attraction-info">
+                                                <h6>Senso-ji Temple</h6>
+                                                <p>Ancient Buddhist temple</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1614932750312-440cdfc45fea?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Tokyo Skytree" />
+                                            <div class="attraction-info">
+                                                <h6>Tokyo Skytree</h6>
+                                                <p>Tallest tower in Japan</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1695011046703-90e1f9f3ba85?q=80&w=1473&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Shibuya Crossing" />
+                                            <div class="attraction-info">
+                                                <h6>Shibuya Crossing</h6>
+                                                <p>World's busiest intersection</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1570365473297-4a454f76ff0e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Tsukiji Outer Market" />
+                                            <div class="attraction-info">
+                                                <h6>Tsukiji Outer Market</h6>
+                                                <p>Famous fish market</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1659277352020-1af9fe708f80?q=80&w=1407&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Meiji Shrine" />
+                                            <div class="attraction-info">
+                                                <h6>Meiji Shrine</h6>
+                                                <p>Peaceful shrine in forest</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-utensils"></i> Local Cuisine</h5>
+                                    <ul>
+                                        <li>Sushi and sashimi</li>
+                                        <li>Ramen noodles</li>
+                                        <li>Tempura (battered seafood/vegetables)</li>
+                                        <li>Takoyaki (octopus balls)</li>
+                                        <li>Matcha green tea desserts</li>
+                                    </ul>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-dollar-sign"></i> Budget Tips</h5>
+                                    <ul>
+                                        <li>Use JR Pass for train travel</li>
+                                        <li>Stay in capsule hotels or hostels</li>
+                                        <li>Eat at convenience stores (konbini)</li>
+                                        <li>Visit during cherry blossom season for free views</li>
+                                        <li>Use free observation decks instead of paid ones</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bali Info -->
+                        <div id="place-info-bali" class="place-info" hidden>
+                            <div class="place-info-header">
+                                <h4><i class="fas fa-umbrella-beach"></i> Bali, Indonesia</h4>
+                                <button class="close-info-btn" onclick="togglePlaceInfo('bali')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="place-info-content">
+                                <div class="info-section">
+                                    <h5><i class="fas fa-info-circle"></i> Overview</h5>
+                                    <p>Bali is a tropical paradise known for its forested volcanic mountains, iconic
+                                        rice paddies, beaches, and coral reefs. It is a popular destination for
+                                        relaxation and adventure.</p>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-map-marker-alt"></i> Must-See Attractions</h5>
+                                    <div class="attractions-gallery">
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1664551577638-9a212d646b9b?q=80&w=1631&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Tanah Lot Temple" />
+                                            <div class="attraction-info">
+                                                <h6>Tanah Lot Temple</h6>
+                                                <p>Sea temple on rock formation</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://plus.unsplash.com/premium_photo-1697730272191-5d6e3a76a61d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Tegalalang Rice Terraces" />
+                                            <div class="attraction-info">
+                                                <h6>Tegalalang Rice Terraces</h6>
+                                                <p>Stunning terraced rice fields</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1565970141923-345a5f05a6e6?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Ubud Monkey Forest" />
+                                            <div class="attraction-info">
+                                                <h6>Ubud Monkey Forest</h6>
+                                                <p>Sacred monkey sanctuary</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1508591086314-d7deb00cede9?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Mount Batur" />
+                                            <div class="attraction-info">
+                                                <h6>Mount Batur</h6>
+                                                <p>Active volcano with sunrise views</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1541666282672-5f4aad922c63?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Nusa Penida" />
+                                            <div class="attraction-info">
+                                                <h6>Nusa Penida</h6>
+                                                <p>Island paradise with crystal waters</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-utensils"></i> Local Cuisine</h5>
+                                    <ul>
+                                        <li>Nasi Goreng (fried rice)</li>
+                                        <li>Mie Goreng (fried noodles)</li>
+                                        <li>Satay (grilled meat skewers)</li>
+                                        <li>Gado-gado (vegetable salad)</li>
+                                        <li>Babi Guling (suckling pig)</li>
+                                    </ul>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-dollar-sign"></i> Budget Tips</h5>
+                                    <ul>
+                                        <li>Stay in guesthouses instead of resorts</li>
+                                        <li>Eat at local warungs (small restaurants)</li>
+                                        <li>Rent a scooter for transportation</li>
+                                        <li>Visit during shoulder season (Apr-Jun, Sep-Nov)</li>
+                                        <li>Bargain at markets but be respectful</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- New York Info -->
+                        <div id="place-info-nyc" class="place-info" hidden>
+                            <div class="place-info-header">
+                                <h4><i class="fas fa-city"></i> New York City, USA</h4>
+                                <button class="close-info-btn" onclick="togglePlaceInfo('nyc')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="place-info-content">
+                                <div class="info-section">
+                                    <h5><i class="fas fa-info-circle"></i> Overview</h5>
+                                    <p>The Big Apple is a global center of culture, finance, and entertainment. Known
+                                        for its iconic skyline, diverse neighborhoods, and world-class museums and
+                                        restaurants.</p>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-map-marker-alt"></i> Must-See Attractions</h5>
+                                    <div class="attractions-gallery">
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1485738422979-f5c462d49f74?q=80&w=1499&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Statue of Liberty" />
+                                            <div class="attraction-info">
+                                                <h6>Statue of Liberty</h6>
+                                                <p>Iconic symbol of freedom</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Central Park" />
+                                            <div class="attraction-info">
+                                                <h6>Central Park</h6>
+                                                <p>Urban oasis in the city</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1582760548598-0bccdf815aa2?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Times Square" />
+                                            <div class="attraction-info">
+                                                <h6>Times Square</h6>
+                                                <p>Bright lights and energy</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1555109307-f7d9da25c244?q=80&w=1473&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Empire State Building" />
+                                            <div class="attraction-info">
+                                                <h6>Empire State Building</h6>
+                                                <p>Art deco skyscraper</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1512621301270-6b01205790ef?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Broadway" />
+                                            <div class="attraction-info">
+                                                <h6>Broadway</h6>
+                                                <p>World-famous theater district</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-utensils"></i> Local Cuisine</h5>
+                                    <ul>
+                                        <li>New York pizza (thin crust)</li>
+                                        <li>Hot dogs from street vendors</li>
+                                        <li>Bagels with cream cheese</li>
+                                        <li>Pastrami sandwiches</li>
+                                        <li>Cheesecake from Junior's</li>
+                                    </ul>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-dollar-sign"></i> Budget Tips</h5>
+                                    <ul>
+                                        <li>Use the subway for transportation</li>
+                                        <li>Visit museums on free days</li>
+                                        <li>Eat at food trucks and delis</li>
+                                        <li>Stay in Brooklyn or Queens for cheaper accommodation</li>
+                                        <li>Walk across Brooklyn Bridge for free views</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- London Info -->
+                        <div id="place-info-london" class="place-info" hidden>
+                            <div class="place-info-header">
+                                <h4><i class="fas fa-crown"></i> London, UK</h4>
+                                <button class="close-info-btn" onclick="togglePlaceInfo('london')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="place-info-content">
+                                <div class="info-section">
+                                    <h5><i class="fas fa-info-circle"></i> Overview</h5>
+                                    <p>London is a historic city that blends centuries of tradition with modern
+                                        innovation. Home to royal palaces, world-class museums, and diverse
+                                        neighborhoods.</p>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-map-marker-alt"></i> Must-See Attractions</h5>
+                                    <div class="attractions-gallery">
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1706907269436-6e1299cebfb0?q=80&w=1988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Big Ben" />
+                                            <div class="attraction-info">
+                                                <h6>Big Ben & Parliament</h6>
+                                                <p>Iconic clock tower</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1740596513758-a19e41ae0a02?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Buckingham Palace" />
+                                            <div class="attraction-info">
+                                                <h6>Buckingham Palace</h6>
+                                                <p>Royal residence</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1578666062144-080ac96e3e24?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Tower of London" />
+                                            <div class="attraction-info">
+                                                <h6>Tower of London</h6>
+                                                <p>Historic castle</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1470215883992-c49406afc34f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="British Museum" />
+                                            <div class="attraction-info">
+                                                <h6>British Museum</h6>
+                                                <p>World artifacts collection</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1572112533098-2785b64123da?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="London Eye" />
+                                            <div class="attraction-info">
+                                                <h6>London Eye</h6>
+                                                <p>Giant observation wheel</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-utensils"></i> Local Cuisine</h5>
+                                    <ul>
+                                        <li>Fish and chips</li>
+                                        <li>Full English breakfast</li>
+                                        <li>Sunday roast with Yorkshire pudding</li>
+                                        <li>Afternoon tea with scones</li>
+                                        <li>Pie and mash</li>
+                                    </ul>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-dollar-sign"></i> Budget Tips</h5>
+                                    <ul>
+                                        <li>Use Oyster card for public transport</li>
+                                        <li>Visit free museums (British Museum, National Gallery)</li>
+                                        <li>Eat at markets like Borough Market</li>
+                                        <li>Stay in Zone 2-3 for cheaper accommodation</li>
+                                        <li>Walk along the Thames for free views</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sydney Info -->
+                        <div id="place-info-sydney" class="place-info" hidden>
+                            <div class="place-info-header">
+                                <h4><i class="fas fa-water"></i> Sydney, Australia</h4>
+                                <button class="close-info-btn" onclick="togglePlaceInfo('sydney')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="place-info-content">
+                                <div class="info-section">
+                                    <h5><i class="fas fa-info-circle"></i> Overview</h5>
+                                    <p>Sydney is Australia's largest city, known for its stunning harbor, iconic Opera
+                                        House, beautiful beaches, and vibrant culture. A perfect blend of urban
+                                        sophistication and natural beauty.</p>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-map-marker-alt"></i> Must-See Attractions</h5>
+                                    <div class="attractions-gallery">
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1528072164453-f4e8ef0d475a?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Sydney Opera House" />
+                                            <div class="attraction-info">
+                                                <h6>Sydney Opera House</h6>
+                                                <p>Architectural masterpiece</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1551342824-bf7a4d19f1da?q=80&w=1445&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Sydney Harbour Bridge" />
+                                            <div class="attraction-info">
+                                                <h6>Sydney Harbour Bridge</h6>
+                                                <p>Iconic bridge</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1538312611088-d83e362efe66?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Bondi Beach" />
+                                            <div class="attraction-info">
+                                                <h6>Bondi Beach</h6>
+                                                <p>Famous surf beach</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://plus.unsplash.com/premium_photo-1713991088871-614d45da7fdb?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Royal Botanic Garden" />
+                                            <div class="attraction-info">
+                                                <h6>Royal Botanic Garden</h6>
+                                                <p>Beautiful gardens</p>
+                                            </div>
+                                        </div>
+                                        <div class="attraction-item">
+                                            <img src="https://images.unsplash.com/photo-1470260453955-6e918f763fc9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                                alt="Darling Harbour" />
+                                            <div class="attraction-info">
+                                                <h6>Darling Harbour</h6>
+                                                <p>Entertainment precinct</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-utensils"></i> Local Cuisine</h5>
+                                    <ul>
+                                        <li>Meat pies and sausage rolls</li>
+                                        <li>Fish and chips</li>
+                                        <li>Pavlova dessert</li>
+                                        <li>Lamington cakes</li>
+                                        <li>Fresh seafood from the harbor</li>
+                                    </ul>
+                                </div>
+                                <div class="info-section">
+                                    <h5><i class="fas fa-dollar-sign"></i> Budget Tips</h5>
+                                    <ul>
+                                        <li>Use Opal card for public transport</li>
+                                        <li>Visit during shoulder season (Mar-May, Sep-Nov)</li>
+                                        <li>Eat at food courts and markets</li>
+                                        <li>Stay in suburbs like Surry Hills or Newtown</li>
+                                        <li>Walk the Bondi to Coogee coastal walk (free)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Memories Section -->
+        <section id="memories-section" class="content-section">
+            <div class="section-header">
+                <h1>Memory Gallery</h1>
+                <p>Your travel moments captured forever</p>
+            </div>
+
+            <div class="memories-container">
+                <!-- Enhanced Upload Card -->
+                <div class="upload-card">
+                    <div class="upload-area" onclick="document.getElementById('photoUpload').click()">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>Upload Travel Photos</h3>
+                        <p>Drag and drop or click to select multiple images</p>
+                        <span class="upload-hint">Supports JPG, PNG, WebP up to 10MB each</span>
+                        <input type="file" id="photoUpload" multiple accept="image/*" style="display: none" />
+                    </div>
+                    <div class="upload-progress" id="uploadProgress" style="display: none">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">Uploading... 0%</span>
+                    </div>
+                </div>
+
+                <!-- Gallery Filters -->
+                <div class="gallery-filters">
+                    <button class="filter-btn active" data-filter="all" onclick="filterMemories('all')">
+                        <i class="fas fa-images"></i>
+                        <span>All</span>
+                        <span class="filter-count" id="allCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="recent" onclick="filterMemories('recent')">
+                        <i class="fas fa-clock"></i>
+                        <span>Recent</span>
+                        <span class="filter-count" id="recentCount">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="favorites" onclick="filterMemories('favorites')">
+                        <i class="fas fa-heart"></i>
+                        <span>Favorites</span>
+                        <span class="filter-count" id="favoritesCount">0</span>
+                    </button>
+                </div>
+
+                <!-- Memories Gallery -->
+                <div class="memories-gallery" id="memoriesGallery">
+                    <!-- Memory cards will be dynamically populated here -->
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none">
+                    <i class="fas fa-camera-retro"></i>
+                    <h3>No memories yet</h3>
+                    <p>Upload your first travel photo to get started!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Trip Plans Section -->
+        <section id="download-section" class="content-section">
+            <div class="section-header">
+                <h1>Download Trip Plans</h1>
+                <p>Get a full summary of your trips with travel links in PDF</p>
+            </div>
+
+            <div class="download-container">
+                <div class="download-card-list" id="downloadCardsContainer">
+                    <!-- Trip cards will be dynamically generated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin-section" class="content-section">
+            <div class="section-header">
+                <h1>Admin Panel</h1>
+                <p>System management</p>
+            </div>
+
+            <div class="admin-container">
+                <div class="admin-stats">
+                    <div class="admin-card">
+                        <h3>User Analytics</h3>
+                        <div class="metric">
+                            <span>Total Users:</span>
+                            <span>1,234</span>
+                        </div>
+                        <div class="metric">
+                            <span>Active Users:</span>
+                            <span>856</span>
+                        </div>
+                        <div class="metric">
+                            <span>New This Month:</span>
+                            <span>127</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3>Trip Statistics</h3>
+                        <div class="metric">
+                            <span>Total Trips:</span>
+                            <span>2,567</span>
+                        </div>
+                        <div class="metric">
+                            <span>Completed:</span>
+                            <span>2,234</span>
+                        </div>
+                        <div class="metric">
+                            <span>Upcoming:</span>
+                            <span>333</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <div class="admin-card">
+                        <h3>Content Management</h3>
+                        <button class="admin-btn">Manage Destinations</button>
+                        <button class="admin-btn">Review Photos</button>
+                        <button class="admin-btn">User Reports</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="shareModal" style="display: none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Share Memory</h3>
+                <button class="modal-close" onclick="closeShareModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="share-preview" id="sharePreview">
+                    <!-- Preview will be populated -->
+                </div>
+                <div class="share-options">
+                    <button class="share-btn whatsapp" onclick="shareToWhatsApp()">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </button>
+                    <button class="share-btn telegram" onclick="shareToTelegram()">
+                        <i class="fab fa-telegram"></i>
+                        <span>Telegram</span>
+                    </button>
+                    <button class="share-btn instagram" onclick="shareToInstagram()">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                    </button>
+                    <button class="share-btn facebook" onclick="shareToFacebook()">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook</span>
+                    </button>
+                    <button class="share-btn twitter" onclick="shareToTwitter()">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </button>
+                    <button class="share-btn copy" onclick="copyImageLink()">
+                        <i class="fas fa-copy"></i>
+                        <span>Copy Link</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none">
+        <div class="loading-spinner">
+            <i class="fas fa-plane loading-icon"></i>
+            <p>Processing your memories...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Appwrite SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+
+    <!-- Dashboard JavaScript -->
+    <script src="dashboard.js"></script>
+
+    <!-- 👇 Appwrite Username Display Script -->
+    <script type="module">
+        import { Client, Account } from "https://cdn.jsdelivr.net/npm/appwrite@13.0.1/+esm";
+
+        const client = new Client();
+        const account = new Account(client);
+
+        client
+            .setEndpoint("https://fra.cloud.appwrite.io/v1") // ✅ Your endpoint
+            .setProject("68860401002a4d8a099f"); // ✅ Your project ID
+
+        account
+            .get()
+            .then((user) => {
+                const nameSpan = document.getElementById("userName");
+                if (nameSpan) {
+                    nameSpan.textContent = `Welcome back, ${user.name || user.email.split("@")[0]
+                        }!`;
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching Appwrite user:", error);
+            });
+
+        // Function to toggle place info visibility
+        function togglePlaceInfo(placeId) {
+            const infos = document.querySelectorAll(".place-info");
+            infos.forEach((info) => {
+                if (info.id === `place-info-${placeId}`) {
+                    const isHidden = info.hasAttribute("hidden");
+                    if (isHidden) {
+                        info.removeAttribute("hidden");
+                    } else {
+                        info.setAttribute("hidden", "");
+                    }
+                } else {
+                    info.setAttribute("hidden", "");
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
