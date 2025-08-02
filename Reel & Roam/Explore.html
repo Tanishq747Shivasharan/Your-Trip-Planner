@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Amazing Destinations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Appwrite SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/4K9+dfkIna7grAKtHDw8="
+        crossorigin=""></script>
+
+    <style>
+        :root {
+            /* Light Theme Colors */
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255,255,255,0.95);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-light: #1a202c;
+            --accent-color: #f97316;
+            --card-bg: rgba(255,255,255,0.95);
+            --modal-bg: white;
+            --border-color: rgba(0,0,0,0.1);
+            --shadow-light: rgba(0,0,0,0.1);
+            --shadow-medium: rgba(0,0,0,0.15);
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --error-color: #f56565;
+            --toggle-bg: #a7f3d0;
+            --toggle-slider-bg: white;
+            --hero-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Colors */
+            --bg-primary: #1a202c;
+            --bg-secondary: rgba(45,55,72,0.95);
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --text-light: #f7fafc;
+            --accent-color: #f97316;
+            --card-bg: rgba(45,55,72,0.95);
+            --modal-bg: #2d3748;
+            --border-color: rgba(255,255,255,0.1);
+            --shadow-light: rgba(0,0,0,0.3);
+            --shadow-medium: rgba(0,0,0,0.5);
+            --toggle-bg: #f97316;
+            --toggle-slider-bg: white;
+            --hero-gradient: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-weight: 400;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        /* Exact Toggle Switch from Screenshots */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: var(--toggle-bg);
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background: var(--toggle-slider-bg);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        [data-theme="dark"] .toggle-slider {
+            transform: translateX(28px);
+        }
+
+        .toggle-icon {
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+        }
+
+        .toggle-switch:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-light);
+            position: relative;
+            background: var(--hero-gradient);
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .hero-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 400;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            letter-spacing: 0.3px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            background: var(--card-bg);
+            box-shadow: 0 4px 20px var(--shadow-light);
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+            color: var(--text-primary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-medium);
+            border-color: var(--accent-color);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .destinations-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            background: var(--bg-primary);
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        .destination-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px var(--shadow-medium);
+        }
+
+        .destination-card.hidden {
+            display: none;
+        }
+
+        .card-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .budget-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            letter-spacing: 0.3px;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .destination-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+        }
+
+        .country-flag {
+            font-size: 1.3rem;
+        }
+
+        .highlights-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .highlights-list li {
+            padding: 6px 0;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.5;
+            letter-spacing: 0.2px;
+        }
+
+        .budget-breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .budget-item {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-family: 'Poppins', sans-serif;
+            border: 1px solid var(--border-color);
+        }
+
+        .budget-item > div:first-child {
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .budget-amount {
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 13px;
+            letter-spacing: 0.2px;
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .view-details-btn, .book-trip-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .view-details-btn {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        .book-trip-btn {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .view-details-btn:hover, .book-trip-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--shadow-medium);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes modalBackdropFade {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+            to {
+                opacity: 1;
+                backdrop-filter: blur(15px);
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            animation: modalBackdropFade 0.4s ease-out;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--modal-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-header {
+            position: relative;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+        }
+
+        .modal-header-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            z-index: 3;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: rgba(0,0,0,0.7);
+            transform: scale(1.1);
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-budget {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: calc(85vh - 300px);
+        }
+
+        .modal-section {
+            margin-bottom: 30px;
+        }
+
+        .modal-section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-highlights {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .modal-highlights li {
+            padding: 12px 15px;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-budget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .modal-budget-item {
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-budget-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .modal-budget-amount {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        /* Leaflet Map Styles */
+        #destinationMap {
+            height: 300px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-light);
+            margin-bottom: 20px; /* Space below map */
+        }
+
+        /* Review Section Styles */
+        .review-form {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px var(--shadow-light);
+        }
+
+        .review-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .review-form .btn-book {
+            width: auto;
+            padding: 12px 25px;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+
+        .reviews-list {
+            margin-top: 30px;
+        }
+
+        .review-item {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .review-rating {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        .review-comment {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .review-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .star-rating {
+            color: gold; /* Or any star color */
+            font-size: 1.2em;
+            letter-spacing: 2px;
+        }
+
+        .no-reviews-message {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        /* Booking Modal */
+        .booking-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1002;
+            animation: modalBackdropFade 0.4s ease-out;
+        }
+
+        .booking-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--modal-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .booking-header {
+            background: var(--accent-color);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .booking-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .booking-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .booking-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .booking-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .booking-body {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: calc(90vh - 120px);
+        }
+
+        .booking-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .price-display {
+            background: var(--accent-color);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .price-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .price-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .booking-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-cancel, .btn-book {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-cancel {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-book {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-book:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-cancel:hover:not(:disabled), .btn-book:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow-medium);
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .success-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .error-message {
+            display: none;
+            background: var(--error-color);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .config-warning {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--warning-color);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 300px;
+            font-size: 14px;
+            z-index: 1003;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .destinations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .budget-breakdown {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-tabs {
+                gap: 10px;
+            }
+            
+            .filter-btn {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+
+            .modal-budget-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+            }
+
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-buttons {
+                flex-direction: column;
+            }
+
+            .card-buttons {
+                flex-direction: column;
+            }
+
+            .toggle-switch {
+                width: 50px;
+                height: 28px;
+            }
+
+            .toggle-slider {
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+            }
+
+            [data-theme="dark"] .toggle-slider {
+                transform: translateX(22px);
+            }
+
+            .config-warning {
+                top: 60px;
+                right: 10px;
+                max-width: 250px;
+            }
+        }
+
+        /* Custom Scrollbar Styles */
+        .modal-body::-webkit-scrollbar,
+        .booking-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track,
+        .booking-body::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 10px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb,
+        .booking-body::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover,
+        .booking-body::-webkit-scrollbar-thumb:hover {
+            background: #ea580c;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        }
+
+        /* Firefox scrollbar */
+        .modal-body,
+        .booking-body {
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) var(--bg-primary);
+        }
+
+        /* Smooth scrolling */
+        .modal-body,
+        .booking-body {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" id="themeToggle">
+        <div class="toggle-switch">
+            <div class="toggle-slider">
+                <span class="toggle-icon">☀️</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="config-warning" id="configWarning">
+        ⚠️ Appwrite not configured. Bookings and Reviews will be saved locally for now. Check console for setup instructions.
+    </div>
+
+    <section class="hero-section">
+        <h1 class="hero-title">Plan Your Perfect Adventure</h1>
+        <p class="hero-subtitle">Create unforgettable journeys with our intelligent trip planner. From solo adventures to group expeditions, we've got you covered.</p>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search destinations..." id="searchInput">
+        </div>
+    </section>
+
+    <div class="destinations-container">
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">All Destinations</button>
+            <button class="filter-btn" data-filter="india">India</button>
+            <button class="filter-btn" data-filter="international">International</button>
+            <button class="filter-btn" data-filter="budget">Budget Friendly</button>
+            <button class="filter-btn" data-filter="luxury">Luxury</button>
+        </div>
+
+        <div class="destinations-grid" id="destinationsGrid">
+            <!-- Destinations will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal" id="destinationModal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalHeader">
+                <span class="close-modal" id="closeModal">&times;</span>
+                <div class="modal-header-content">
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <div class="modal-budget" id="modalBudget"></div>
+                </div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Map Section -->
+                <div class="modal-section">
+                    <h3 class="modal-section-title">📍 Location on Map</h3>
+                    <div id="destinationMap"></div>
+                </div>
+
+                <!-- Highlights Section -->
+                <div class="modal-section">
+                    <h3 class="modal-section-title">🌟 Highlights</h3>
+                    <ul class="modal-highlights" id="modalHighlightsList"></ul>
+                </div>
+                
+                <!-- Budget Breakdown Section -->
+                <div class="modal-section">
+                    <h3 class="modal-section-title">💰 Budget Breakdown</h3>
+                    <div class="modal-budget-grid" id="modalBudgetGrid"></div>
+                </div>
+
+                <!-- Review Section -->
+                <div class="modal-section">
+                    <h3 class="modal-section-title">💬 Reviews</h3>
+                    <div class="review-form-container">
+                        <form id="reviewForm" class="review-form">
+                            <input type="hidden" id="reviewDestinationKey" name="destinationKey">
+                            <div class="form-group">
+                                <label class="form-label" for="reviewerName">Your Name</label>
+                                <input type="text" id="reviewerName" name="reviewerName" class="form-input" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="reviewRating">Rating (1-5 Stars)</label>
+                                <input type="number" id="reviewRating" name="rating" class="form-input" min="1" max="5" placeholder="e.g., 5" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="reviewComment">Your Review</label>
+                                <textarea id="reviewComment" name="comment" class="form-textarea" placeholder="Share your experience..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-book" id="submitReviewBtn">
+                                <span class="loading-spinner" id="reviewLoadingSpinner"></span>
+                                <span id="reviewButtonText">Submit Review</span>
+                            </button>
+                            <div class="error-message" id="reviewErrorMessage" style="margin-top: 10px;"></div>
+                        </form>
+                    </div>
+                    <div class="reviews-list" id="reviewsList">
+                        <!-- Reviews will be loaded here -->
+                        <p class="no-reviews-message" id="noReviewsMessage">No reviews yet. Be the first to share your experience!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="booking-modal" id="bookingModal">
+        <div class="booking-content">
+            <div class="booking-header">
+                <span class="booking-close" id="closeBooking">&times;</span>
+                <h2 class="booking-title">✈️ Book Your Dream Trip</h2>
+                <p class="booking-subtitle">Fill in your details and we'll make your journey unforgettable</p>
+            </div>
+
+            <div class="booking-body">
+                <div id="bookingForm">
+                    <div class="error-message" id="errorMessage"></div>
+                    
+                    <form class="booking-form" id="tripBookingForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">First Name</label>
+                                <input type="text" name="firstName" class="form-input" placeholder="Enter your first name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" name="lastName" class="form-input" placeholder="Enter your last name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" name="phone" class="form-input" placeholder="+1 (555) 123-4567" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Departure Date</label>
+                                <input type="date" name="departureDate" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Number of Travelers</label>
+                                <select name="travelers" class="form-select" required>
+                                    <option value="">Select travelers</option>
+                                    <option value="1">1 Person</option>
+                                    <option value="2">2 People</option>
+                                    <option value="3">3 People</option>
+                                    <option value="4">4 People</option>
+                                    <option value="5+">5+ People</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Trip Duration</label>
+                            <select name="duration" class="form-select" required>
+                                <option value="">Select duration</option>
+                                <option value="3-5">3-5 Days</option>
+                                <option value="6-10">6-10 Days</option>
+                                <option value="11-15">11-15 Days</option>
+                                <option value="16+">16+ Days</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Special Requests</label>
+                            <textarea name="specialRequests" class="form-textarea" placeholder="Any special requirements, dietary restrictions, or preferences..."></textarea>
+                        </div>
+
+                        <div class="price-display">
+                            <div class="price-label">Estimated Total Cost</div>
+                            <div class="price-amount" id="totalPrice">₹0</div>
+                        </div>
+
+                        <div class="booking-buttons">
+                            <button type="button" class="btn-cancel" id="cancelBooking">Cancel</button>
+                            <button type="submit" class="btn-book" id="submitBooking">
+                                <span class="loading-spinner" id="loadingSpinner"></span>
+                                <span id="buttonText">Book Now</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    <div class="success-icon">🎉</div>
+                    <h3 class="success-title">Booking Confirmed!</h3>
+                    <p class="success-text">Thank you for choosing us! Your booking has been saved and we'll contact you within 24 hours to finalize your dream trip details.</p>
+                    <button class="btn-book" onclick="closeBookingModal()" style="margin-top: 20px; width: 200px;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Destinations data
+        const destinations = {
+            london: {
+                title: "London, United Kingdom",
+                coordinates: [51.5072, -0.1276],
+                budget: { accommodation: 1250000, food: 660000, transport: 415000, activities: 580000 },
+                highlights: [
+                    "🎡 London Eye & Thames River",
+                    "🏰 Tower of London",
+                    "🛍 Oxford Street shopping",
+                    "🎭 West End theatre shows",
+                    "🍻 Traditional pubs & British vibes"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&h=600&fit=crop&crop=center",
+                flag: "🇬🇧",
+                category: "international"
+            },
+            jaipur: {
+                title: "Jaipur, India",
+                coordinates: [26.9124, 75.7873],
+                budget: { accommodation: 7000, food: 2200, transport: 1800, activities: 2500 },
+                highlights: [
+                    "🐘 Amber Fort & Elephant ride",
+                    "🏯 City Palace & Hawa Mahal",
+                    "🎨 Local art and block prints",
+                    "🎡 Evening bazaars & street food",
+                    "🚗 Heritage walk in old Pink City"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            rajasthan: {
+                title: "Rajasthan, India",
+                coordinates: [27.0238, 74.2179],
+                budget: { accommodation: 5000, food: 2000, transport: 2500, activities: 3500 },
+                highlights: [
+                    "🏰 Majestic forts & palaces",
+                    "🪔 Desert safaris & dunes",
+                    "🎨 Colorful festivals & markets",
+                    "🐪 Camel rides & folk music",
+                    "🍛 Traditional Rajasthani cuisine"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            manali: {
+                title: "Manali, India",
+                coordinates: [32.2432, 77.1892],
+                budget: { accommodation: 6000, food: 2500, transport: 2000, activities: 3000 },
+                highlights: [
+                    "🏔 Snowy mountains & Rohtang Pass",
+                    "🌲 Woodlands & river rafting",
+                    "🚂 Himachal scenery by toy train",
+                    "🧣 Cozy cafés & local bakeries",
+                    "🧗 Adventure sports like paragliding"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            australia: {
+                title: "Australia",
+                coordinates: [-25.2744, 133.7751],
+                budget: { accommodation: 2000000, food: 900000, transport: 600000, activities: 850000 },
+                highlights: [
+                    "🌊 Great Barrier Reef & beaches",
+                    "🦘 Wildlife like kangaroos & koalas",
+                    "🌆 Sydney Opera House & Harbour Bridge",
+                    "🏜 Outback adventures & Uluru",
+                    "🥂 Foodie scenes in Melbourne & Adelaide"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&crop=center",
+                flag: "🇦🇺",
+                category: "international"
+            },
+            ooty: {
+                title: "Ooty, India",
+                coordinates: [11.4064, 76.6932],
+                budget: { accommodation: 4500, food: 1800, transport: 1500, activities: 2100 },
+                highlights: [
+                    "🍃 Botanical gardens & tea plantations",
+                    "🚂 Nilgiri Mountain Railway",
+                    "🌄 Ooty lake boat rides",
+                    "🌺 Rose gardens & scenic viewpoints",
+                    "🧊 Cool climate & local snacks"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1582719201952-247cb47ca745?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            shimla: {
+                title: "Shimla, India",
+                coordinates: [31.1048, 77.1734],
+                budget: { accommodation: 5500, food: 2000, transport: 2200, activities: 2400 },
+                highlights: [
+                    "❄ Mall Road & Ridge walk",
+                    "🏞 Jakhu Temple & forest trails",
+                    "🚡 Toy train to Kalka",
+                    "🍨 Ice cream at woolen kiosks",
+                    "🛍 Local handicrafts & woolens"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1558005530-a7958896ec60?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            agra: {
+                title: "Agra, India",
+                coordinates: [27.1767, 78.0081],
+                budget: { accommodation: 6500, food: 2200, transport: 1800, activities: 2700 },
+                highlights: [
+                    "🕌 Taj Mahal at sunrise",
+                    "🏰 Agra Fort & Mughal gardens",
+                    "🍛 Mughlai cuisine & street snacks",
+                    "📸 Mehtab Bagh photo views",
+                    "🛍 Marble inlay handicrafts shopping"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            mysore: {
+                title: "Mysore, India",
+                coordinates: [12.2958, 76.6394],
+                budget: { accommodation: 5000, food: 2000, transport: 1800, activities: 2300 },
+                highlights: [
+                    "🏰 Mysore Palace illuminated",
+                    "🌺 Brindavan Gardens & light show",
+                    "🧵 Silk weaving & sandalwood markets",
+                    "🎨 Art & cultural museums",
+                    "🍴 Mysore masala dosa & sweets"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            hyderabad: {
+                title: "Hyderabad, India",
+                coordinates: [17.3850, 78.4867],
+                budget: { accommodation: 6000, food: 2400, transport: 2000, activities: 2600 },
+                highlights: [
+                    "🏰 Charminar & Old City bazaars",
+                    "🍲 Hyderabadi biryani & street eats",
+                    "🎨 Salar Jung Museum",
+                    "🌅 Hussain Sagar lake & Buddha statue",
+                    "🛍 Laad Bazaar bangles & pearls"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1578470876224-81c926c6d48b?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            mumbai: {
+                title: "Mumbai, India",
+                coordinates: [19.0760, 72.8777],
+                budget: { accommodation: 7000, food: 3000, transport: 2500, activities: 3200 },
+                highlights: [
+                    "🌊 Marine Drive & Chowpatty beach",
+                    "🎭 Bollywood tours & theaters",
+                    "🏛 Gateway of India & Elephanta Caves",
+                    "🍴 Street food like vada pav & pav bhaji",
+                    "🛍 Colaba Causeway & fashion markets"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            bangalore: {
+                title: "Bangalore, India",
+                coordinates: [12.9716, 77.5946],
+                budget: { accommodation: 6500, food: 2400, transport: 2000, activities: 2600 },
+                highlights: [
+                    "🌳 Cubbon Park & Lalbagh flora",
+                    "💻 Tech hub & startup vibe",
+                    "🍺 Microbrew breweries & nightlife",
+                    "🎨 Street art & food markets",
+                    "🍛 South Indian filter coffee & dosa"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            },
+            ladakh: {
+                title: "Ladakh, India",
+                coordinates: [34.2268, 77.5619],
+                budget: { accommodation: 8000, food: 2800, transport: 3500, activities: 4000 },
+                highlights: [
+                    "🏔 Pangong Tso & Nubra Valley",
+                    "🛶 Shanti Stupa & monasteries",
+                    "🧗 High-altitude treks & biking",
+                    "🌌 Starry nights in Leh",
+                    "🧡 Tibetan Buddhist culture & festivals"
+                ],
+                unsplashImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&crop=center",
+                flag: "🇮🇳",
+                category: "india"
+            }
+        };
+
+        let currentBookingDestination = null;
+        let appwriteConfigured = false;
+        let client, databases;
+        let currentMap = null; // Global variable to hold the Leaflet map instance
+
+        // Constants for live budget calculation
+        const BASE_DURATION_DAYS = 7; // Assume the base budget is for 7 days for 1 person
+
+        const TRAVELER_MULTIPLIERS = {
+            '1': 1,
+            '2': 1.8, // 2 people, 80% more than 1 (slight discount)
+            '3': 2.5, // 3 people, 150% more than 1
+            '4': 3.2, // 4 people, 220% more than 1
+            '5+': 4.0 // 5+ people, 300% more than 1 (simplified)
+        };
+
+        const DURATION_DAYS_MAP = {
+            '3-5': 4,   // Average 4 days
+            '6-10': 8,  // Average 8 days
+            '11-15': 13, // Average 13 days
+            '16+': 20   // Average 20 days
+        };
+
+        // Initialize Appwrite (with error handling)
+        function initializeAppwrite() {
+            try {
+                // Check if Appwrite is loaded
+                if (typeof Appwrite === 'undefined') {
+                    console.warn('Appwrite SDK not loaded');
+                    return false;
+                }
+
+                const { Client, Databases, ID } = Appwrite;
+
+                // Configuration - Replace these with your actual values
+                const APPWRITE_ENDPOINT = 'https://nyc.cloud.appwrite.io/v1';
+                const APPWRITE_PROJECT_ID = '688061fd001d4c7c3730'; // Replace with your project ID
+                const DATABASE_ID = '688ba257002dc578f405'; // Replace with your database ID
+                const COLLECTION_ID = '688ba265001d2560fffb'; // Replace with your bookings collection ID
+                const REVIEWS_COLLECTION_ID = '688ba271000221200000'; // Replace with your reviews collection ID
+
+                // Check if configuration is set
+                if (APPWRITE_PROJECT_ID === 'YOUR_PROJECT_ID' || 
+                    DATABASE_ID === 'YOUR_DATABASE_ID' || 
+                    COLLECTION_ID === 'YOUR_COLLECTION_ID' ||
+                    REVIEWS_COLLECTION_ID === 'YOUR_REVIEWS_COLLECTION_ID') {
+                    
+                    console.warn('🔧 Appwrite Configuration Needed:');
+                    console.warn('1. Create an Appwrite project at https://cloud.appwrite.io');
+                    console.warn('2. Create a database and collections (one for bookings, one for reviews)');
+                    console.warn('3. Replace the configuration values in the script');
+                    console.warn('4. Set up collection attributes for booking and review data');
+                    
+                    // Show warning to user
+                    document.getElementById('configWarning').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('configWarning').style.display = 'none';
+                    }, 10000);
+                    
+                    return false;
+                }
+
+                // Initialize client
+                client = new Client();
+                client
+                    .setEndpoint(APPWRITE_ENDPOINT)
+                    .setProject(APPWRITE_PROJECT_ID);
+
+                databases = new Databases(client);
+                
+                // Store IDs for later use
+                window.APPWRITE_CONFIG = {
+                    DATABASE_ID,
+                    COLLECTION_ID,
+                    REVIEWS_COLLECTION_ID
+                };
+
+                appwriteConfigured = true;
+                console.log('✅ Appwrite initialized successfully');
+                return true;
+
+            } catch (error) {
+                console.error('❌ Appwrite initialization failed:', error);
+                return false;
+            }
+        }
+
+        // Save booking to Appwrite database
+        async function saveBookingToDatabase(bookingData) {
+            if (!appwriteConfigured) {
+                throw new Error('Appwrite not configured');
+            }
+
+            try {
+                const { ID } = Appwrite;
+                const response = await databases.createDocument(
+                    window.APPWRITE_CONFIG.DATABASE_ID,
+                    window.APPWRITE_CONFIG.COLLECTION_ID,
+                    ID.unique(),
+                    bookingData
+                );
+                return response;
+            } catch (error) {
+                console.error('Database save error:', error);
+                throw error;
+            }
+        }
+
+        // Fallback: Save to localStorage
+        function saveBookingLocally(bookingData) {
+            try {
+                const bookings = JSON.parse(localStorage.getItem('travelBookings') || '[]');
+                bookingData.id = Date.now().toString();
+                bookings.push(bookingData);
+                localStorage.setItem('travelBookings', JSON.stringify(bookings));
+                console.log('📱 Booking saved locally:', bookingData);
+                return bookingData;
+            } catch (error) {
+                console.error('Local storage error:', error);
+                throw error;
+            }
+        }
+
+        // Save review to Appwrite database
+        async function saveReviewToDatabase(reviewData) {
+            if (!appwriteConfigured) {
+                throw new Error('Appwrite not configured');
+            }
+            try {
+                const { ID } = Appwrite;
+                const response = await databases.createDocument(
+                    window.APPWRITE_CONFIG.DATABASE_ID,
+                    window.APPWRITE_CONFIG.REVIEWS_COLLECTION_ID, // Use reviews collection
+                    ID.unique(),
+                    reviewData
+                );
+                return response;
+            } catch (error) {
+                console.error('Review database save error:', error);
+                throw error;
+            }
+        }
+
+        // Fallback: Save review to localStorage
+        function saveReviewLocally(reviewData) {
+            try {
+                const reviews = JSON.parse(localStorage.getItem('travelReviews') || '[]');
+                reviewData.id = Date.now().toString();
+                reviews.push(reviewData);
+                localStorage.setItem('travelReviews', JSON.stringify(reviews));
+                console.log('📱 Review saved locally:', reviewData);
+                return reviewData;
+            } catch (error) {
+                console.error('Local storage review error:', error);
+                throw error;
+            }
+        }
+
+        // Fetch reviews from Appwrite database
+        async function fetchReviewsFromDatabase(destinationKey) {
+            if (!appwriteConfigured) {
+                throw new Error('Appwrite not configured');
+            }
+            try {
+                const { Query } = Appwrite;
+                const response = await databases.listDocuments(
+                    window.APPWRITE_CONFIG.DATABASE_ID,
+                    window.APPWRITE_CONFIG.REVIEWS_COLLECTION_ID,
+                    [Query.equal('destinationKey', destinationKey), Query.orderDesc('timestamp')]
+                );
+                return response.documents;
+            } catch (error) {
+                console.error('Failed to fetch reviews from Appwrite:', error);
+                throw error;
+            }
+        }
+
+        // Fallback: Fetch reviews from localStorage
+        function fetchReviewsLocally(destinationKey) {
+            try {
+                const reviews = JSON.parse(localStorage.getItem('travelReviews') || '[]');
+                return reviews.filter(review => review.destinationKey === destinationKey)
+                              .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            } catch (error) {
+                console.error('Failed to fetch reviews locally:', error);
+                return [];
+            }
+        }
+
+        // Theme Toggle Functionality
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateToggleIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateToggleIcon(newTheme);
+        }
+
+        function updateToggleIcon(theme) {
+            const toggleIcon = document.querySelector('.toggle-icon');
+            
+            if (theme === 'dark') {
+                toggleIcon.textContent = '🌙';
+            } else {
+                toggleIcon.textContent = '☀️';
+            }
+        }
+
+        function formatCurrency(amount) {
+            if (amount >= 100000) {
+                return `₹${(amount / 100000).toFixed(1)}L`;
+            } else if (amount >= 1000) {
+                return `₹${(amount / 1000).toFixed(1)}K`;
+            } else {
+                return `₹${amount}`;
+            }
+        }
+
+        function getTotalBudget(budget) {
+            return budget.accommodation + budget.food + budget.transport + budget.activities;
+        }
+
+        function getBudgetCategory(totalBudget) {
+            if (totalBudget <= 20000) return 'budget';
+            if (totalBudget >= 1000000) return 'luxury';
+            return 'mid-range';
+        }
+
+        function createDestinationCard(key, destination) {
+            const totalBudget = getTotalBudget(destination.budget);
+            const budgetCategory = getBudgetCategory(totalBudget);
+            
+            return `
+                <div class="destination-card" data-category="${destination.category}" data-budget="${budgetCategory}" data-key="${key}">
+                    <div class="card-image" style="background-image: url('${destination.unsplashImage}')">
+                        <div class="budget-tag">${formatCurrency(totalBudget)}</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="destination-title">
+                            <span class="country-flag">${destination.flag}</span>
+                            ${destination.title}
+                        </h3>
+                        <ul class="highlights-list">
+                            ${destination.highlights.slice(0, 3).map(highlight => `<li>${highlight}</li>`).join('')}
+                        </ul>
+                        <div class="budget-breakdown">
+                            <div class="budget-item">
+                                <div>🏨 Stay</div>
+                                <div class="budget-amount">${formatCurrency(destination.budget.accommodation)}</div>
+                            </div>
+                            <div class="budget-item">
+                                <div>🍽️ Food</div>
+                                <div class="budget-amount">${formatCurrency(destination.budget.food)}</div>
+                            </div>
+                            <div class="budget-item">
+                                <div>🚗 Transport</div>
+                                <div class="budget-amount">${formatCurrency(destination.budget.transport)}</div>
+                            </div>
+                            <div class="budget-item">
+                                <div>🎯 Activities</div>
+                                <div class="budget-amount">${formatCurrency(destination.budget.activities)}</div>
+                            </div>
+                        </div>
+                        <div class="card-buttons">
+                            <button class="view-details-btn" onclick="openModal('${key}')">View Details</button>
+                            <button class="book-trip-btn" onclick="openBookingModal('${key}')">Book Trip</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDestinations() {
+            const grid = document.getElementById('destinationsGrid');
+            grid.innerHTML = '';
+            
+            Object.entries(destinations).forEach(([key, destination]) => {
+                grid.innerHTML += createDestinationCard(key, destination);
+            });
+        }
+
+        function filterDestinations(category) {
+            const cards = document.querySelectorAll('.destination-card');
+            
+            cards.forEach(card => {
+                const cardCategory = card.dataset.category;
+                const cardBudget = card.dataset.budget;
+                
+                if (category === 'all') {
+                    card.classList.remove('hidden');
+                } else if (category === 'budget' && cardBudget === 'budget') {
+                    card.classList.remove('hidden');
+                } else if (category === 'luxury' && cardBudget === 'luxury') {
+                    card.classList.remove('hidden');
+                } else if (cardCategory === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function searchDestinations(searchTerm) {
+            const cards = document.querySelectorAll('.destination-card');
+            
+            cards.forEach(card => {
+                const key = card.dataset.key;
+                const destination = destinations[key];
+                const title = destination.title.toLowerCase();
+                const highlights = destination.highlights.join(' ').toLowerCase();
+                
+                if (title.includes(searchTerm.toLowerCase()) || highlights.includes(searchTerm.toLowerCase())) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function openModal(key) {
+            const destination = destinations[key];
+            const totalBudget = getTotalBudget(destination.budget);
+            
+            document.getElementById('modalHeader').style.backgroundImage = `url('${destination.unsplashImage}')`;
+            
+            document.getElementById('modalTitle').innerHTML = `
+                <span>${destination.flag}</span>
+                ${destination.title}
+            `;
+            document.getElementById('modalBudget').textContent = `Total Budget: ${formatCurrency(totalBudget)}`;
+            
+            // Populate Highlights
+            document.getElementById('modalHighlightsList').innerHTML = destination.highlights.map(highlight => `<li>${highlight}</li>`).join('');
+
+            // Populate Budget Breakdown
+            document.getElementById('modalBudgetGrid').innerHTML = `
+                <div class="modal-budget-item">
+                    <div class="modal-budget-label">🏨 Accommodation</div>
+                    <div class="modal-budget-amount">${formatCurrency(destination.budget.accommodation)}</div>
+                </div>
+                <div class="modal-budget-item">
+                    <div class="modal-budget-label">🍽️ Food</div>
+                    <div class="modal-budget-amount">${formatCurrency(destination.budget.food)}</div>
+                </div>
+                <div class="modal-budget-item">
+                    <div class="modal-budget-label">🚗 Transport</div>
+                    <div class="modal-budget-amount">${formatCurrency(destination.budget.transport)}</div>
+                </div>
+                <div class="modal-budget-item">
+                    <div class="modal-budget-label">🎯 Activities</div>
+                    <div class="modal-budget-amount">${formatCurrency(destination.budget.activities)}</div>
+                </div>
+            `;
+
+            // Set destination key for review form
+            document.getElementById('reviewDestinationKey').value = key;
+            document.getElementById('reviewForm').reset(); // Clear review form
+            hideReviewError(); // Hide any previous review errors
+            setReviewLoadingState(false); // Reset review button state
+
+            document.getElementById('destinationModal').style.display = 'block';
+
+            // Initialize and display map
+            if (currentMap) {
+                currentMap.remove(); // Remove previous map instance if exists
+            }
+            currentMap = L.map('destinationMap').setView(destination.coordinates, 13); // 13 is zoom level
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(currentMap);
+            L.marker(destination.coordinates).addTo(currentMap)
+                .bindPopup(`<b>${destination.title}</b>`).openPopup();
+
+            // Invalidate map size after modal is visible to ensure it renders correctly
+            setTimeout(() => {
+                if (currentMap) {
+                    currentMap.invalidateSize();
+                }
+            }, 100); // Small delay to ensure modal is fully rendered
+
+            // Render reviews for the current destination
+            renderReviews(key);
+        }
+
+        function closeModal() {
+            document.getElementById('destinationModal').style.display = 'none';
+            if (currentMap) {
+                currentMap.remove(); // Clean up map instance
+                currentMap = null;
+            }
+        }
+
+        function openBookingModal(key) {
+            currentBookingDestination = key;
+            
+            const destination = destinations[key];
+            document.querySelector('.booking-title').innerHTML = `✈️ Book ${destination.title}`;
+            
+            document.getElementById('tripBookingForm').reset();
+            document.getElementById('bookingForm').style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            document.getElementById('bookingModal').style.display = 'block';
+
+            // Perform initial budget calculation when modal opens
+            calculateLiveBudget();
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+            currentBookingDestination = null;
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function setLoadingState(isLoading) {
+            const submitButton = document.getElementById('submitBooking');
+            const spinner = document.getElementById('loadingSpinner');
+            const buttonText = document.getElementById('buttonText');
+            
+            if (isLoading) {
+                submitButton.disabled = true;
+                spinner.style.display = 'inline-block';
+                buttonText.textContent = 'Booking...';
+            } else {
+                submitButton.disabled = false;
+                spinner.style.display = 'none';
+                buttonText.textContent = 'Book Now';
+            }
+        }
+
+        function setReviewLoadingState(isLoading) {
+            const submitButton = document.getElementById('submitReviewBtn');
+            const spinner = document.getElementById('reviewLoadingSpinner');
+            const buttonText = document.getElementById('reviewButtonText');
+            
+            if (isLoading) {
+                submitButton.disabled = true;
+                spinner.style.display = 'inline-block';
+                buttonText.textContent = 'Submitting...';
+            } else {
+                submitButton.disabled = false;
+                spinner.style.display = 'none';
+                buttonText.textContent = 'Submit Review';
+            }
+        }
+
+        function showReviewError(message) {
+            const errorElement = document.getElementById('reviewErrorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideReviewError() {
+            document.getElementById('reviewErrorMessage').style.display = 'none';
+        }
+
+        function renderReviews(destinationKey) {
+            const reviewsListDiv = document.getElementById('reviewsList');
+            const noReviewsMessage = document.getElementById('noReviewsMessage');
+            reviewsListDiv.innerHTML = ''; // Clear previous reviews
+
+            // Fetch reviews (try Appwrite first, then fallback)
+            let reviewsPromise;
+            if (appwriteConfigured) {
+                reviewsPromise = fetchReviewsFromDatabase(destinationKey);
+            } else {
+                reviewsPromise = Promise.resolve(fetchReviewsLocally(destinationKey));
+            }
+
+            reviewsPromise.then(reviews => {
+                if (reviews.length === 0) {
+                    noReviewsMessage.style.display = 'block';
+                } else {
+                    noReviewsMessage.style.display = 'none';
+                    reviews.forEach(review => {
+                        const reviewItem = document.createElement('div');
+                        reviewItem.classList.add('review-item');
+                        
+                        const ratingStars = '⭐'.repeat(review.rating);
+                        const reviewDate = new Date(review.timestamp).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                        });
+
+                        reviewItem.innerHTML = `
+                            <div class="review-header">
+                                <div class="reviewer-name">${review.reviewerName}</div>
+                                <div class="review-rating"><span class="star-rating">${ratingStars}</span></div>
+                            </div>
+                            <p class="review-comment">${review.comment}</p>
+                            <div class="review-date">${reviewDate}</div>
+                        `;
+                        reviewsListDiv.appendChild(reviewItem);
+                    });
+                }
+            }).catch(error => {
+                console.error('Error rendering reviews:', error);
+                reviewsListDiv.innerHTML = `<p style="color: var(--error-color);">Failed to load reviews. ${error.message}</p>`;
+                noReviewsMessage.style.display = 'none';
+            });
+        }
+
+        function calculateLiveBudget() {
+            const travelersSelect = document.querySelector('select[name="travelers"]');
+            const durationSelect = document.querySelector('select[name="duration"]');
+            const totalPriceElement = document.getElementById('totalPrice');
+
+            if (!currentBookingDestination || !travelersSelect.value || !durationSelect.value) {
+                totalPriceElement.textContent = formatCurrency(0); // Display 0 or "Select options"
+                return;
+            }
+
+            const destination = destinations[currentBookingDestination];
+            const baseTotalBudget = getTotalBudget(destination.budget); // This is the total for 1 person, BASE_DURATION_DAYS
+
+            const baseDailyCostPerPerson = baseTotalBudget / BASE_DURATION_DAYS;
+
+            const numTravelers = travelersSelect.value;
+            const selectedDuration = durationSelect.value;
+
+            const travelerMultiplier = TRAVELER_MULTIPLIERS[numTravelers] || 1; 
+            const actualDurationDays = DURATION_DAYS_MAP[selectedDuration] || BASE_DURATION_DAYS; 
+
+            let estimatedTotal = baseDailyCostPerPerson * travelerMultiplier * actualDurationDays;
+
+            // Round to nearest whole number for currency display
+            estimatedTotal = Math.round(estimatedTotal);
+
+            totalPriceElement.textContent = formatCurrency(estimatedTotal);
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize everything
+            initTheme();
+            renderDestinations();
+            initializeAppwrite();
+            
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterDestinations(this.dataset.filter);
+                });
+            });
+            
+            document.getElementById('searchInput').addEventListener('input', function() {
+                searchDestinations(this.value);
+            });
+            
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('destinationModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+
+            document.getElementById('closeBooking').addEventListener('click', closeBookingModal);
+            document.getElementById('cancelBooking').addEventListener('click', closeBookingModal);
+            document.getElementById('bookingModal').addEventListener('click', function(e) {
+                if (e.target === this) closeBookingModal();
+            });
+
+            // Add event listeners for live budget calculation
+            document.querySelector('select[name="travelers"]').addEventListener('change', calculateLiveBudget);
+            document.querySelector('select[name="duration"]').addEventListener('change', calculateLiveBudget);
+
+
+            // Enhanced form submission with fallback
+            document.getElementById('tripBookingForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!currentBookingDestination) {
+                    showError('No destination selected. Please try again.');
+                    return;
+                }
+
+                hideError();
+                setLoadingState(true);
+
+                try {
+                    const formData = new FormData(this);
+                    const destination = destinations[currentBookingDestination];
+                    // Use the live calculated total budget
+                    const totalBudget = parseInt(document.getElementById('totalPrice').textContent.replace('₹', '').replace('L', '00000').replace('K', '000'));
+
+
+                    // Prepare booking data
+                    const bookingData = {
+                        // Personal Information
+                        firstName: formData.get('firstName'),
+                        lastName: formData.get('lastName'),
+                        email: formData.get('email'),
+                        phone: formData.get('phone'),
+                        
+                        // Trip Details
+                        destination: destination.title,
+                        destinationKey: currentBookingDestination,
+                        departureDate: formData.get('departureDate'),
+                        travelers: formData.get('travelers'),
+                        duration: formData.get('duration'),
+                        specialRequests: formData.get('specialRequests') || '',
+                        
+                        // Budget Information
+                        totalBudget: totalBudget, // Use the live calculated budget
+                        budgetBreakdown: { // Still include original breakdown for reference
+                            accommodation: destination.budget.accommodation,
+                            food: destination.budget.food,
+                            transport: destination.budget.transport,
+                            activities: destination.budget.activities
+                        },
+                        
+                        // Additional Information
+                        destinationFlag: destination.flag,
+                        destinationCategory: destination.category,
+                        coordinates: destination.coordinates,
+                        highlights: destination.highlights,
+                        
+                        // Metadata
+                        bookingDate: new Date().toISOString(),
+                        status: 'pending'
+                    };
+
+                    let savedBooking;
+
+                    // Try to save to Appwrite first, fallback to localStorage
+                    if (appwriteConfigured) {
+                        try {
+                            savedBooking = await saveBookingToDatabase(bookingData);
+                            console.log('✅ Booking saved to Appwrite:', savedBooking);
+                        } catch (appwriteError) {
+                            console.warn('⚠️ Appwrite save failed, using localStorage:', appwriteError);
+                            savedBooking = saveBookingLocally(bookingData);
+                        }
+                    } else {
+                        savedBooking = saveBookingLocally(bookingData);
+                    }
+
+                    // Show success message
+                    document.getElementById('bookingForm').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Auto close after 5 seconds
+                    setTimeout(() => {
+                        closeBookingModal();
+                    }, 5000);
+
+                } catch (error) {
+                    console.error('❌ Booking error:', error);
+                    
+                    let errorMessage = 'Failed to save your booking. Please try again.';
+                    
+                    if (error.message.includes('Appwrite not configured')) {
+                        errorMessage = 'Booking saved locally. Configure Appwrite for cloud storage.';
+                    } else if (error.message.includes('Missing required parameter')) {
+                        errorMessage = 'Please fill in all required fields.';
+                    } else if (error.message.includes('Project not found')) {
+                        errorMessage = 'Database connection error. Booking saved locally.';
+                    }
+                    
+                    showError(errorMessage);
+                } finally {
+                    setLoadingState(false);
+                }
+            });
+
+            // Review form submission
+            document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                hideReviewError();
+                setReviewLoadingState(true);
+
+                const destinationKey = document.getElementById('reviewDestinationKey').value;
+                const reviewerName = document.getElementById('reviewerName').value.trim();
+                const rating = parseInt(document.getElementById('reviewRating').value, 10);
+                const comment = document.getElementById('reviewComment').value.trim();
+
+                if (!reviewerName || !rating || !comment || !destinationKey) {
+                    showReviewError('Please fill in all review fields.');
+                    setReviewLoadingState(false);
+                    return;
+                }
+                if (rating < 1 || rating > 5) {
+                    showReviewError('Rating must be between 1 and 5.');
+                    setReviewLoadingState(false);
+                    return;
+                }
+
+                const reviewData = {
+                    destinationKey: destinationKey,
+                    reviewerName: reviewerName,
+                    rating: rating,
+                    comment: comment,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    if (appwriteConfigured) {
+                        try {
+                            await saveReviewToDatabase(reviewData);
+                            console.log('✅ Review saved to Appwrite.');
+                        } catch (appwriteError) {
+                            console.warn('⚠️ Appwrite review save failed, using localStorage:', appwriteError);
+                            saveReviewLocally(reviewData);
+                        }
+                    } else {
+                        saveReviewLocally(reviewData);
+                    }
+
+                    this.reset(); // Clear the form
+                    renderReviews(destinationKey); // Re-render reviews to show the new one
+                } catch (error) {
+                    console.error('❌ Review submission error:', error);
+                    let errorMessage = 'Failed to submit review. Please try again.';
+                    if (error.message.includes('Appwrite not configured')) {
+                        errorMessage = 'Review saved locally. Configure Appwrite for cloud storage.';
+                    }
+                    showReviewError(errorMessage);
+                } finally {
+                    setReviewLoadingState(false);
+                }
+            });
+        });
+
+        // Global functions for onclick handlers
+        window.openModal = openModal;
+        window.openBookingModal = openBookingModal;
+        window.closeBookingModal = closeBookingModal;
+    </script>
+</body>
+</html>
