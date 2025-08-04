@@ -308,7 +308,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Yash-Javnjal](https://github.com/Yash-Javnjal)** - Frontend Developer & UI/UX Backend Integration & Testing
 - **[ARYANJAKKAL123](https://github.com/ARYANJAKKAL123)** - Frontend Developer & UI/UX(Explorer Section)
 - **[homkare](https://github.com/homkare)** - Alerts design section
-- **[patilbajrang2913](https://github.com/patilbajrang2913) - About Us section(This is us)
+- **[patilbajrang2913](https://github.com/patilbajrang2913)** - About Us section(This is us)
 
 ### **Contributors**
 We appreciate all contributors who have helped make this project better!
